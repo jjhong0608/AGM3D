@@ -1072,7 +1072,8 @@ void AGM::point::approximateNaNDerivatives(const std::vector<AGM::point> *points
                 return *std::prev(getAxialLine(item)->end() - 1);
             }
         }
-        printError("AGM::point::approximateNaNDerivatives", "findInnerPointOfBoundary");
+        printError("AGM::point::approximateNaNDerivatives",
+                   "findInnerPointOfBoundary, condition (which is %c) may be not boundary", getCondition());
         return nullptr;
     };
     if (std::isnan(values["dx"])) values["dx"] = findInnerPointOfBoundary()->getValue()["dx"];
@@ -1080,8 +1081,8 @@ void AGM::point::approximateNaNDerivatives(const std::vector<AGM::point> *points
     if (std::isnan(values["dz"])) values["dz"] = findInnerPointOfBoundary()->getValue()["dz"];
 }
 
-void AGM::point::calculateDerivativesTwice(const std::function<double(int)> &f, const std::function<double(int)> &g,
-                                           const std::function<double(int)> &h) {
+void AGM::point::calculateSecondDerivatives(const std::function<double(int)> &f, const std::function<double(int)> &g,
+                                            const std::function<double(int)> &h) {
     values["dxx"] = -(f(getIdx()) + values["phi"] + values["psi"]) / mp;
     values["dyy"] = -(g(getIdx()) - values["phi"]) / mp;
     values["dzz"] = -(h(getIdx()) - values["psi"]) / mp;

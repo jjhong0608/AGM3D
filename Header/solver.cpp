@@ -382,13 +382,13 @@ void AGM::solver::NavierStokesSolver() {
                 pts->at(i).setCondition('D');
                 pts->at(i)["bdv"] = ZEROVALUE;
             }
-            f.assignPreviousValue(puvel.at(i), pvvel.at(i), pwvel.at(i), ppvel.at(i), uvel.at(i), vvel.at(i),
-                                  wvel.at(i), pts->at(i));
+//            f.assignPreviousValue(puvel.at(i), pvvel.at(i), pwvel.at(i), ppvel.at(i), uvel.at(i), vvel.at(i),
+//                                  wvel.at(i), pts->at(i));
             f.assignBoundaryValue(uvel.at(i), vvel.at(i), wvel.at(i));
         }
-//        f.loadPreviousValue(
-//                "/home/jjhong0608/docker/AGM3D/Navier-Stokes/Lid-driven_cavity/Re1000/AGM_Result_100.000000",
-//                &puvel, &pvvel, &pwvel, &ppvel);
+        f.loadPreviousValue(
+                "/home/jjhong0608/docker/AGM3D/Navier-Stokes/Lid-driven_cavity/Re1000_2/AGM_Result_6.000000",
+                &puvel, &pvvel, &pwvel, &ppvel);
     };
     auto assignBoundaryValue = [&f, &uvel, &vvel, &wvel]() -> void {
         #pragma omp parallel for
@@ -468,7 +468,7 @@ void AGM::solver::NavierStokesSolver() {
         }
         #pragma omp parallel for
         for (auto item = pts->begin(); item != pts->end(); ++item) {
-            item->calculateDerivativesTwice(pRhsX1, pRhsY1, pRhsZ1);
+            item->calculateSecondDerivatives(pRhsX1, pRhsY1, pRhsZ1);
         }
     };
     auto updateRHSVelocity = [&]() -> void {

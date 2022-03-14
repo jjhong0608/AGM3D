@@ -139,7 +139,7 @@ AGM::heatFunction::~heatFunction() = default;
 AGM::NavierStokesFunction::NavierStokesFunction() = default;
 
 double AGM::NavierStokesFunction::initialTime() {
-    return ZEROVALUE;
+    return 6.0E0;
 }
 
 double AGM::NavierStokesFunction::terminalTime() {

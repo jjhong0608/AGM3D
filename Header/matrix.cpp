@@ -130,7 +130,7 @@ void AGM::matrix<pt>::calculateMatrix() {
     int size = int(pts->size());
     auto *rb = new double[pPram.n];
 
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < size; ++i) {
         rb[i] = pts->at(i).getRb()[0];
         rb[i + size] = pts->at(i).getRb()[1];
@@ -145,7 +145,7 @@ void AGM::matrix<pt>::calculateMatrix() {
         printf("\nERROR during solution: %d", pPram.error);
         exit(3);
     }
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < size; ++i) {
         pts->at(i)["sol"] = x[i];
         pts->at(i)["phi"] = x[i + size];

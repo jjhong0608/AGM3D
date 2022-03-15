@@ -150,8 +150,8 @@ void AGM::matrixNormal<pt>::factorizeMatrix() {
 template<typename pt>
 void AGM::matrixNormal<pt>::calculateMatrix() {
     int size{int(matrix<pt>::pts->size())};
-    auto *rb = new double[3 * matrix<pt>::pPram.n];
-    auto *rb0 = new double[3 * matrix<pt>::pPram.n + 1];
+    auto *rb = new double[matrix<pt>::pPram.n];
+    auto *rb0 = new double[matrix<pt>::pPram.n + 1];
     #pragma omp parallel for
     for (int i = 0; i < size; ++i) {
         rb0[i] = matrix<pt>::pts->at(i).getRb()[0];
@@ -165,7 +165,7 @@ void AGM::matrixNormal<pt>::calculateMatrix() {
             rb[j] += entT[k] * rb0[jaT[k]];
         }
     }
-    double x[3 * matrix<pt>::pPram.n];
+    double x[matrix<pt>::pPram.n];
     for (auto &i: x) i = ZEROVALUE;
     matrix<pt>::pPram.phase = 33;
     pardiso(matrix<pt>::pPram.ppt, &matrix<pt>::pPram.maxfct, &matrix<pt>::pPram.mnum, &matrix<pt>::pPram.mtype,

@@ -429,7 +429,8 @@ void AGM::pointHeat::approximateNaNDerivatives(const std::vector<AGM::pointHeat>
                 return *std::prev(getAxialLine(item)->end() - 1);
             }
         }
-        printError("AGM::pointHeat::approximateNaNDerivatives", "findInnerPointOfBoundary");
+        printError("AGM::pointHeat::approximateNaNDerivatives",
+                   "findInnerPointOfBoundary, condition (which is %c) may be not boundary", getCondition());
         return nullptr;
     };
     if (std::isnan(values["dx"])) values["dx"] = points->at(findInnerPointOfBoundary()->getIdx()).getValue()["dx"];

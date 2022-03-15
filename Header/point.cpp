@@ -369,7 +369,6 @@ void AGM::point::calculateRepresentationFormula() {
         default:
             printError("AGM::point::calculateRepresentationFormula()", "boundary condition (which is %c) is wrong",
                        condition);
-
     }
 }
 
@@ -710,9 +709,7 @@ void AGM::point::approximatePhiAndPsiAtBoundary(int order) {
         printError("AGM::point::approximatePhiAndPsiAtBoundary", "findStencil");
         return R;
     };
-//    auto pt{*findInnerPointOfBoundary()};
-    point pt{};
-    pt = *findInnerPointOfBoundary();
+    auto pt{*findInnerPointOfBoundary()};
     auto stencil{findStencil()};
     double tm{}, tb{}, tp{};
     if (getAxialLine('x')) {

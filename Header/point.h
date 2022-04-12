@@ -7,6 +7,7 @@
 
 #include <functional>
 #include "matrixRow.h"
+#include "StdVector"
 
 namespace AGM {
     class point;
@@ -15,13 +16,21 @@ namespace AGM {
 
     using axialElement = std::array<point *, 30>;
 
+    struct interfacePoint {
+        std::string pos{};
+        point *point{};
+    };
+
+    using interfaceElement = std::vector<interfacePoint>;
+
     class point {
     protected:
         int idx{};
         coordinate xyz{}, normal{};
         double mp{};
         char condition{};
-        axialElement element{}, element1{};
+        axialElement element{};
+        interfaceElement ielement{};
         value values{};
         std::array<matrixRow, 3> solMatrixRow{}, deriMatrixRow{}, rhsMatrixRow{}, partMatrixRow{};
         std::array<double, 3> rb{}, dv{};
@@ -69,9 +78,9 @@ namespace AGM {
 
         void setElement(const std::array<point *, 30> &array);
 
-        const std::array<point *, 30> &getElement1() const;
+        const std::vector<interfacePoint> &getIelement() const;
 
-        void setElement1(const std::array<point *, 30> &array);
+        void setIelement(const std::vector<interfacePoint> &vector);
 
         const value &getValue() const;
 
@@ -180,6 +189,7 @@ namespace AGM {
 
         void calculateSecondDerivatives(const std::function<double(int)> &f, const std::function<double(int)> &g,
                                         const std::function<double(int)> &h);
+
     };
 
 }

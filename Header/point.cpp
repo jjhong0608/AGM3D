@@ -4,6 +4,7 @@
 
 #include <functional>
 #include "point.h"
+#include "StdVector"
 
 int AGM::point::nPts;
 std::vector<AGM::axialLine> *AGM::point::xline;
@@ -73,12 +74,12 @@ void AGM::point::setElement(const std::array<AGM::point *, 30> &array) {
     point::element = array;
 }
 
-const std::array<AGM::point *, 30> &AGM::point::getElement1() const {
-    return element1;
+const std::vector<AGM::interfacePoint> &AGM::point::getIelement() const {
+    return ielement;
 }
 
-void AGM::point::setElement1(const std::array<AGM::point *, 30> &array) {
-    point::element1 = array;
+void AGM::point::setIelement(const std::vector<AGM::interfacePoint> &vector) {
+    point::ielement = vector;
 }
 
 const AGM::value &AGM::point::getValue() const {
@@ -204,7 +205,6 @@ AGM::point &AGM::point::operator=(const AGM::point &src) {
         mp = src.mp;
         condition = src.condition;
         element = src.element;
-        element1 = src.element1;
         values = src.values;
         solMatrixRow = src.solMatrixRow;
         deriMatrixRow = src.deriMatrixRow;

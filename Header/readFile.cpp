@@ -462,6 +462,5 @@ AGM::readFile::loadData(const std::string &filename, std::vector<AGM::point> *pt
             if (element[U]) element[U] = item[U]->getElement()[U];
             if (element[D]) element[D] = item[D]->getElement()[D];
         }
-        item.setElement1(element);
     }
 }

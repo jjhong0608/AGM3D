@@ -382,13 +382,13 @@ void AGM::solver::NavierStokesSolver() {
                 pts->at(i).setCondition('D');
                 pts->at(i)["bdv"] = ZEROVALUE;
             }
-//            f.assignPreviousValue(puvel.at(i), pvvel.at(i), pwvel.at(i), ppvel.at(i), uvel.at(i), vvel.at(i),
-//                                  wvel.at(i), pts->at(i));
+            f.assignPreviousValue(puvel.at(i), pvvel.at(i), pwvel.at(i), ppvel.at(i), uvel.at(i), vvel.at(i),
+                                  wvel.at(i), pts->at(i));
             f.assignBoundaryValue(uvel.at(i), vvel.at(i), wvel.at(i));
         }
-        f.loadPreviousValue(
-                "/home/jjhong0608/docker/AGM3D/Navier-Stokes/Lid-driven_cavity/Re1000_2/AGM_Result_2.000000", &puvel,
-                &pvvel, &pwvel, &ppvel);
+//        f.loadPreviousValue(
+//                "/home/jjhong0608/docker/AGM3D/Navier-Stokes/Lid-driven_cavity/Re1000_2/AGM_Result_2.000000", &puvel,
+//                &pvvel, &pwvel, &ppvel);
     };
     auto assignBoundaryValue = [&f, &uvel, &vvel, &wvel]() -> void {
         #pragma omp parallel for
@@ -533,7 +533,7 @@ void AGM::solver::NavierStokesSolver() {
         std::cout << "current time = [" << pointHeat::getTime() << " / " << AGM::NavierStokesFunction::terminalTime()
                   << "]\n";
         if (isclose(std::floor(pointHeat::getTime() + HALFVALUE * pointHeat::getDelta()), pointHeat::getTime())) {
-            wf.writeResult("/home/jjhong0608/docker/AGM3D/Navier-Stokes/Lid-driven_cavity/Re400_2/AGM_Result_" +
+            wf.writeResult("/home/jjhong0608/docker/AGM3D/Navier-Stokes/Lid-driven_cavity/Re1000_5/AGM_Result_" +
                            std::to_string(pointHeat::getTime()));
         }
     };
@@ -576,7 +576,7 @@ void AGM::solver::NavierStokesSolver() {
     matrixVelocity.releaseMatrix();
     matrixPressure.releaseMatrix();
 
-    wf.writeResult("/home/jjhong0608/docker/AGM3D/Navier-Stokes/Lid-driven_cavity/Re400_2/AGM_Result");
+    wf.writeResult("/home/jjhong0608/docker/AGM3D/Navier-Stokes/Lid-driven_cavity/Re1000_5/AGM_Result");
 }
 
 AGM::solver::~solver() = default;

@@ -7,7 +7,7 @@
 double AGM::pointHeat::time;
 double AGM::pointHeat::delta;
 
-double AGM::pointHeat::getTime() {
+auto AGM::pointHeat::getTime() -> double {
     return time;
 }
 
@@ -15,7 +15,7 @@ void AGM::pointHeat::setTime(double d) {
     pointHeat::time = d;
 }
 
-double AGM::pointHeat::getDelta() {
+auto AGM::pointHeat::getDelta() -> double {
     return delta;
 }
 
@@ -26,7 +26,7 @@ void AGM::pointHeat::setDelta(double d) {
 void AGM::pointHeat::findStencil(const axialElement *axialElement1, std::vector<AGM::pointHeat> *vector) {
     int n{};
     for (const auto &item: *axialElement1) {
-        if (item) {
+        if (item != nullptr) {
             element.at(n) = &(vector->at(item->getIdx()));
         }
         ++n;
@@ -107,30 +107,41 @@ void AGM::pointHeat::calculateRepresentationFormulaCross() {
     solMatrixRow[2] = row[0] + row[1] - row[2];
 }
 
-AGM::matrixRow AGM::pointHeat::calculateRepresentationFormulaNeumannOnAxial(char axis, int axisInt) {
+auto AGM::pointHeat::calculateRepresentationFormulaNeumannOnAxial(char axis, int axisInt) -> AGM::matrixRow {
     auto Error = []() -> double {
         printError("AGM::pointHeat::calculateRepresentationFormulaNeumannOnAxial", "Null pointer");
         return ZEROVALUE;
     };
     point *ptc = getAxialLine(axis)->front()->getIdx() == getIdx() ? getAxialLine(axis)->at(1) :
-                 getAxialLine(axis)->back()->getIdx() == getIdx() ? *std::prev(getAxialLine(axis)->end() - 1) : nullptr;
-    point *ptl =
-            getAxialLine(axis)->front()->getIdx() == getIdx() ? this : getAxialLine(axis)->back()->getIdx() == getIdx()
-                                                                       ? *std::prev(getAxialLine(axis)->end() - 2)
-                                                                       : nullptr;
+                 getAxialLine(axis)->back()->getIdx() == getIdx() ? *std::prev(getAxialLine(axis)->end() - 1) :
+                 nullptr;
+    point *ptl = getAxialLine(axis)->front()->getIdx() == getIdx() ? this :
+                 getAxialLine(axis)->back()->getIdx() == getIdx() ? *std::prev(getAxialLine(axis)->end() - 2) :
+                 nullptr;
     point *ptr = getAxialLine(axis)->front()->getIdx() == getIdx() ? getAxialLine(axis)->at(2) :
-                 getAxialLine(axis)->back()->getIdx() == getIdx() ? this : nullptr;
-    std::string string =
-            getAxialLine(axis)->front()->getIdx() == getIdx() ? "ND" : getAxialLine(axis)->back()->getIdx() == getIdx()
-                                                                       ? "DN" : "";
-    double tm = ptl ? ptl->getXyz()[axisInt] : Error();
-    double tb = ptc ? ptc->getXyz()[axisInt] : Error();
-    double tp = ptr ? ptr->getXyz()[axisInt] : Error();
+                 getAxialLine(axis)->back()->getIdx() == getIdx() ? this :
+                 nullptr;
+    std::string string = getAxialLine(axis)->front()->getIdx() == getIdx() ? "ND" :
+                         getAxialLine(axis)->back()->getIdx() == getIdx() ? "DN" : "";
+    double tm = ptl != nullptr ? ptl->getXyz()[axisInt] : Error();
+    double tb = ptc != nullptr ? ptc->getXyz()[axisInt] : Error();
+    double tp = ptr != nullptr ? ptr->getXyz()[axisInt] : Error();
     double signPhi0 = axis == 'x' ? UNITVALUE : -UNITVALUE;
     double signPsi0 = axis == 'x' ? UNITVALUE : -UNITVALUE;
     bool signPhi1 = axis != 'z';
     bool signPsi1 = axis != 'y';
     auto gFunc{GreenfunctionReactionDiffusion(tm, tb, tp, mp, mp, 2.0 / 3.0 / delta)};
+
+    if (string == "ND") {
+        if (iszero(gFunc.green_function_ND(tm))) {
+            return calculateRepresentationFormulaNeumannOffAxial(axis, axisInt);
+        }
+    } else if (string == "DN") {
+        if (iszero(gFunc.green_function_DN(tp))) {
+            return calculateRepresentationFormulaNeumannOffAxial(axis, axisInt);
+        }
+    }
+
     matrixRow row{};
     if (string == "ND") {
         row[ptl->getIdx()] = -mp * gFunc.green_function_ND(tm);
@@ -189,40 +200,50 @@ AGM::matrixRow AGM::pointHeat::calculateRepresentationFormulaNeumannOnAxial(char
     return row;
 }
 
-AGM::matrixRow AGM::pointHeat::calculateRepresentationFormulaNeumannOffAxial(char axis, int axisInt) {
+auto AGM::pointHeat::calculateRepresentationFormulaNeumannOffAxial(char axis, int axisInt) -> AGM::matrixRow {
     auto Error = []() -> double {
         printError("AGM::pointHeat::calculateRepresentationFormulaNeumannOffAxial", "aline error");
         return ZEROVALUE;
     };
-    double tm{}, tb{}, tp{};
+    double tm{};
+    double tb{};
+    double tp{};
     if (axis == 'x') {
-        tm = element[L] ? element[L]->getXyz()[0] : aline[1] ? element[LF]->getXyz()[0] : aline[2]
-                                                                                          ? element[LU]->getXyz()[0]
-                                                                                          : Error();
+        tm = element[L] != nullptr ? element[L]->getXyz()[0] : aline[1] != nullptr ? element[LF]->getXyz()[0] :
+                                                               aline[2] != nullptr
+                                                               ? element[LU]->getXyz()[0]
+                                                               : Error();
         tb = getXyz()[0];
-        tp = element[R] ? element[R]->getXyz()[0] : aline[1] ? element[RF]->getXyz()[0] : aline[2]
-                                                                                          ? element[RU]->getXyz()[0]
-                                                                                          : Error();
+        tp = element[R] != nullptr ? element[R]->getXyz()[0] : aline[1] != nullptr ? element[RF]->getXyz()[0] :
+                                                               aline[2] != nullptr
+                                                               ? element[RU]->getXyz()[0]
+                                                               : Error();
     } else if (axis == 'y') {
-        tm = element[B] ? element[B]->getXyz()[1] : aline[0] ? element[BR]->getXyz()[1] : aline[2]
-                                                                                          ? element[BU]->getXyz()[1]
-                                                                                          : Error();
+        tm = element[B] != nullptr ? element[B]->getXyz()[1] : aline[0] != nullptr ? element[BR]->getXyz()[1] :
+                                                               aline[2] != nullptr
+                                                               ? element[BU]->getXyz()[1]
+                                                               : Error();
         tb = getXyz()[1];
-        tp = element[F] ? element[F]->getXyz()[1] : aline[0] ? element[FR]->getXyz()[1] : aline[2]
-                                                                                          ? element[FU]->getXyz()[1]
-                                                                                          : Error();
+        tp = element[F] != nullptr ? element[F]->getXyz()[1] : aline[0] != nullptr ? element[FR]->getXyz()[1] :
+                                                               aline[2] != nullptr
+                                                               ? element[FU]->getXyz()[1]
+                                                               : Error();
     } else if (axis == 'z') {
-        tm = element[D] ? element[D]->getXyz()[2] : aline[0] ? element[DR]->getXyz()[2] : aline[1]
-                                                                                          ? element[DF]->getXyz()[2]
-                                                                                          : Error();
+        tm = element[D] != nullptr ? element[D]->getXyz()[2] : aline[0] != nullptr ? element[DR]->getXyz()[2] :
+                                                               aline[1] != nullptr
+                                                               ? element[DF]->getXyz()[2]
+                                                               : Error();
         tb = getXyz()[2];
-        tp = element[U] ? element[U]->getXyz()[2] : aline[0] ? element[UR]->getXyz()[2] : aline[1]
-                                                                                          ? element[UF]->getXyz()[2]
-                                                                                          : Error();
+        tp = element[U] != nullptr ? element[U]->getXyz()[2] : aline[0] != nullptr ? element[UR]->getXyz()[2] :
+                                                               aline[1] != nullptr
+                                                               ? element[UF]->getXyz()[2]
+                                                               : Error();
     }
     char realAxis{};
     for (const auto &item: {'z', 'y', 'x'}) {
-        if (getAxialLine(item)) realAxis = item;
+        if (getAxialLine(item) != nullptr) {
+            realAxis = item;
+        }
     }
     double signPhi0 = axis == 'x' ? UNITVALUE : -UNITVALUE;
     double signPsi0 = axis == 'x' ? UNITVALUE : -UNITVALUE;
@@ -230,7 +251,9 @@ AGM::matrixRow AGM::pointHeat::calculateRepresentationFormulaNeumannOffAxial(cha
     bool signPsi1 = axis != 'y';
     auto gFunc{GreenfunctionReactionDiffusion(tm, tb, tp, mp, mp, 2.0 / 3.0 / delta)};
     auto approximateSol = [this, &realAxis](point *ptr, point *ptl, double coefficient, int i, double d) -> matrixRow {
-        double m{ptl->getXyz()[i]}, b{xyz[i]}, p{ptr->getXyz()[i]};
+        double m{ptl->getXyz()[i]};
+        double b{xyz[i]};
+        double p{ptr->getXyz()[i]};
         auto func{GreenfunctionReactionDiffusion(m, b, p, d, d, 2.0 / 3.0 / delta)};
         auto mRow{matrixRow()};
         double signPhi0 = realAxis == 'x' ? UNITVALUE : -UNITVALUE;
@@ -260,7 +283,9 @@ AGM::matrixRow AGM::pointHeat::calculateRepresentationFormulaNeumannOffAxial(cha
         return mRow * coefficient;
     };
     auto linearApproximation = [this](point *ptr, point *ptl, double coefficient, int i, int plus) -> matrixRow {
-        double m{ptl->getXyz()[i]}, b{xyz[i]}, p{ptr->getXyz()[i]};
+        double m{ptl->getXyz()[i]};
+        double b{xyz[i]};
+        double p{ptr->getXyz()[i]};
         auto mRow{matrixRow()};
         mRow[ptl->getIdx() + plus * getNPts()] = (p - b) / (p - m);
         mRow[ptr->getIdx() + plus * getNPts()] = (b - m) / (p - m);
@@ -271,46 +296,58 @@ AGM::matrixRow AGM::pointHeat::calculateRepresentationFormulaNeumannOffAxial(cha
     auto assignMatrix = [&row, &approximateSol, &linearApproximation, &signPhi0, &signPsi0, &signPhi1, &signPsi1](
             point *pt, point *ptr, point *ptl, double mp0, GreenfunctionReactionDiffusion *func, double d, int i,
             int i0, char c) -> void {
-        if (pt) {
+        if (pt != nullptr) {
             row[pt->getIdx()] += mp0 * func->green_function_ttau(d);
-            if (signPhi1) row[pt->getIdx() + getNPts()] += signPhi0 * func->green_integral_tau(c);
-            if (signPsi1) row[pt->getIdx() + 2 * getNPts()] += signPsi0 * func->green_integral_tau(c);
+            if (signPhi1) {
+                row[pt->getIdx() + getNPts()] += signPhi0 * func->green_integral_tau(c);
+            }
+            if (signPsi1) {
+                row[pt->getIdx() + 2 * getNPts()] += signPsi0 * func->green_integral_tau(c);
+            }
             row[pt->getIdx() + (i0 + 3) * getNPts()] += func->green_integral_tau(c);
             row[pt->getIdx() + (i0 + 6) * getNPts()] += func->green_integral_ttau(c);
         } else {
             row += approximateSol(ptr, ptl, mp0 * func->green_function_ttau(d), i, std::abs(mp0));
-            if (signPhi1) row += linearApproximation(ptr, ptl, signPhi0 * func->green_integral_tau(c), i, 1);
-            if (signPsi1) row += linearApproximation(ptr, ptl, signPsi0 * func->green_integral_tau(c), i, 2);
+            if (signPhi1) {
+                row += linearApproximation(ptr, ptl, signPhi0 * func->green_integral_tau(c), i, 1);
+            }
+            if (signPsi1) {
+                row += linearApproximation(ptr, ptl, signPsi0 * func->green_integral_tau(c), i, 2);
+            }
             row += linearApproximation(ptr, ptl, func->green_integral_tau(c), i, i0 + 3);
             row += linearApproximation(ptr, ptl, func->green_integral_ttau(c), i, i0 + 6);
         }
     };
-    if (signPhi1) row[getIdx() + getNPts()] += signPhi0 * gFunc.green_integral_tau('c');
-    if (signPsi1) row[getIdx() + 2 * getNPts()] += signPsi0 * gFunc.green_integral_tau('c');
+    if (signPhi1) {
+        row[getIdx() + getNPts()] += signPhi0 * gFunc.green_integral_tau('c');
+    }
+    if (signPsi1) {
+        row[getIdx() + 2 * getNPts()] += signPsi0 * gFunc.green_integral_tau('c');
+    }
     row[getIdx() + (axisInt + 3) * getNPts()] += gFunc.green_integral_tau('c');
     row[getIdx() + (axisInt + 6) * getNPts()] += gFunc.green_integral_ttau('c') + UNITVALUE / mp;
 
     if (axis == 'x') {
-        if (aline[1]) {
+        if (aline[1] != nullptr) {
             assignMatrix(element[R], element[RF], element[RB], -mp, &gFunc, tp, 1, 0, 'r');
             assignMatrix(element[L], element[LF], element[LB], mp, &gFunc, tm, 1, 0, 'l');
-        } else if (aline[2]) {
+        } else if (aline[2] != nullptr) {
             assignMatrix(element[R], element[RU], element[RD], -mp, &gFunc, tp, 2, 0, 'r');
             assignMatrix(element[L], element[LU], element[LD], mp, &gFunc, tm, 2, 0, 'l');
         }
     } else if (axis == 'y') {
-        if (aline[0]) {
+        if (aline[0] != nullptr) {
             assignMatrix(element[F], element[FR], element[FL], -mp, &gFunc, tp, 0, 1, 'r');
             assignMatrix(element[B], element[BR], element[BL], mp, &gFunc, tm, 0, 1, 'l');
-        } else if (aline[2]) {
+        } else if (aline[2] != nullptr) {
             assignMatrix(element[F], element[FU], element[FD], -mp, &gFunc, tp, 2, 1, 'r');
             assignMatrix(element[B], element[BU], element[BD], mp, &gFunc, tm, 2, 1, 'l');
         }
     } else if (axis == 'z') {
-        if (aline[0]) {
+        if (aline[0] != nullptr) {
             assignMatrix(element[U], element[UR], element[UL], -mp, &gFunc, tp, 0, 2, 'r');
             assignMatrix(element[D], element[DR], element[DL], mp, &gFunc, tm, 0, 2, 'l');
-        } else if (aline[1]) {
+        } else if (aline[1] != nullptr) {
             assignMatrix(element[U], element[UF], element[UB], -mp, &gFunc, tp, 1, 2, 'r');
             assignMatrix(element[D], element[DF], element[DB], mp, &gFunc, tm, 1, 2, 'l');
         }
@@ -422,10 +459,10 @@ void AGM::pointHeat::calculateDerivatives(const std::vector<pointHeat> *points, 
 void AGM::pointHeat::approximateNaNDerivatives(const std::vector<AGM::pointHeat> *points) {
     auto findInnerPointOfBoundary = [this]() -> point * {
         for (const auto &item: {'x', 'y', 'z'}) {
-            if (getAxialLine(item) && getAxialLine(item)->front()->getIdx() == getIdx()) {
+            if ((getAxialLine(item) != nullptr) && getAxialLine(item)->front()->getIdx() == getIdx()) {
                 return getAxialLine(item)->at(1);
             }
-            if (getAxialLine(item) && getAxialLine(item)->back()->getIdx() == getIdx()) {
+            if ((getAxialLine(item) != nullptr) && getAxialLine(item)->back()->getIdx() == getIdx()) {
                 return *std::prev(getAxialLine(item)->end() - 1);
             }
         }
@@ -433,7 +470,13 @@ void AGM::pointHeat::approximateNaNDerivatives(const std::vector<AGM::pointHeat>
                    "findInnerPointOfBoundary, condition (which is %c) may be not boundary", getCondition());
         return nullptr;
     };
-    if (std::isnan(values["dx"])) values["dx"] = points->at(findInnerPointOfBoundary()->getIdx()).getValue()["dx"];
-    if (std::isnan(values["dy"])) values["dy"] = points->at(findInnerPointOfBoundary()->getIdx()).getValue()["dy"];
-    if (std::isnan(values["dz"])) values["dz"] = points->at(findInnerPointOfBoundary()->getIdx()).getValue()["dz"];
+    if (std::isnan(values["dx"])) {
+        values["dx"] = points->at(findInnerPointOfBoundary()->getIdx()).getValue()["dx"];
+    }
+    if (std::isnan(values["dy"])) {
+        values["dy"] = points->at(findInnerPointOfBoundary()->getIdx()).getValue()["dy"];
+    }
+    if (std::isnan(values["dz"])) {
+        values["dz"] = points->at(findInnerPointOfBoundary()->getIdx()).getValue()["dz"];
+    }
 }

@@ -7,6 +7,9 @@ int main() {
     rlim.rlim_max = -1;
     setrlimit(RLIMIT_STACK, &rlim);
 
+    mkl_set_dynamic(0);
+    mkl_set_num_threads(mkl_get_max_threads());
+
     auto pts = std::vector<AGM::point>{};
     auto xline = std::vector<AGM::axialLine>{};
     auto yline = std::vector<AGM::axialLine>{};
@@ -36,12 +39,6 @@ int main() {
 
     auto solver = AGM::solver(&pts);
     solver.NavierStokesSolver();
-
-//    auto wf = AGM::writeFile<AGM::point>(&pts);
-//    std::cout.precision(16);
-//    std::cout << "Relative L-2 error of the solution = " << std::scientific << wf.calculateError("sol") << "\n";
-//
-//    wf.writeResult("/home/jjhong0608/docker/AGM3D/AGM_Result");
 
     return 0;
 }

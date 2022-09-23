@@ -26,7 +26,7 @@ AGM::point::point(const AGM::coordinate &xyz, double mp) : xyz(xyz), mp(mp) {}
 
 AGM::point::point(int idx, const AGM::coordinate &xyz, double mp) : idx(idx), xyz(xyz), mp(mp) {}
 
-int AGM::point::getIdx() const {
+auto AGM::point::getIdx() const -> int {
     return idx;
 }
 
@@ -34,7 +34,7 @@ void AGM::point::setIdx(int i) {
     point::idx = i;
 }
 
-const AGM::coordinate &AGM::point::getXyz() const {
+auto AGM::point::getXyz() const -> const AGM::coordinate & {
     return xyz;
 }
 
@@ -42,7 +42,7 @@ void AGM::point::setXyz(const AGM::coordinate &coordinate) {
     point::xyz = coordinate;
 }
 
-const AGM::coordinate &AGM::point::getNormal() const {
+auto AGM::point::getNormal() const -> const AGM::coordinate & {
     return normal;
 }
 
@@ -50,7 +50,7 @@ void AGM::point::setNormal(const AGM::coordinate &coordinate) {
     point::normal = coordinate;
 }
 
-double AGM::point::getMp() const {
+auto AGM::point::getMp() const -> double {
     return mp;
 }
 
@@ -58,7 +58,7 @@ void AGM::point::setMp(double d) {
     point::mp = d;
 }
 
-char AGM::point::getCondition() const {
+auto AGM::point::getCondition() const -> char {
     return condition;
 }
 
@@ -66,15 +66,15 @@ void AGM::point::setCondition(char i) {
     point::condition = i;
 }
 
-const std::array<AGM::point *, 30> &AGM::point::getElement() const {
+auto AGM::point::getElement() const -> const std::array<AGM::point *, AGM::elementNumber> & {
     return element;
 }
 
-void AGM::point::setElement(const std::array<AGM::point *, 30> &array) {
+void AGM::point::setElement(const std::array<AGM::point *, AGM::elementNumber> &array) {
     point::element = array;
 }
 
-const std::vector<AGM::interfacePoint> &AGM::point::getIelement() const {
+auto AGM::point::getIelement() const -> const std::vector<AGM::interfacePoint> & {
     return ielement;
 }
 
@@ -82,7 +82,7 @@ void AGM::point::setIelement(const std::vector<AGM::interfacePoint> &vector) {
     point::ielement = vector;
 }
 
-const AGM::value &AGM::point::getValue() const {
+auto AGM::point::getValue() const -> const AGM::value & {
     return values;
 }
 
@@ -90,7 +90,7 @@ void AGM::point::setValue(const AGM::value &value) {
     point::values = value;
 }
 
-const std::array<AGM::matrixRow, 3> &AGM::point::getSolMatrixRow() const {
+auto AGM::point::getSolMatrixRow() const -> const std::array<AGM::matrixRow, 3> & {
     return solMatrixRow;
 }
 
@@ -98,7 +98,7 @@ void AGM::point::setSolMatrixRow(const std::array<AGM::matrixRow, 3> &row) {
     point::solMatrixRow = row;
 }
 
-const std::array<AGM::matrixRow, 3> &AGM::point::getDeriMatrixRow() const {
+auto AGM::point::getDeriMatrixRow() const -> const std::array<AGM::matrixRow, 3> & {
     return deriMatrixRow;
 }
 
@@ -106,7 +106,7 @@ void AGM::point::setDeriMatrixRow(const std::array<AGM::matrixRow, 3> &row) {
     point::deriMatrixRow = row;
 }
 
-const std::array<double, 3> &AGM::point::getRb() const {
+auto AGM::point::getRb() const -> const std::array<double, 3> & {
     return rb;
 }
 
@@ -114,14 +114,20 @@ void AGM::point::setRb(const std::array<double, 3> &array) {
     point::rb = array;
 }
 
-const std::array<AGM::axialLine *, 3> &AGM::point::getAxialLine() const {
+auto AGM::point::getAxialLine() const -> const std::array<AGM::axialLine *, 3> & {
     return aline;
 }
 
-AGM::axialLine *&AGM::point::getAxialLine(char i) {
-    if (i == 'x') return aline[0];
-    if (i == 'y') return aline[1];
-    if (i == 'z') return aline[2];
+auto AGM::point::getAxialLine(char i) -> AGM::axialLine *& {
+    if (i == 'x') {
+        return aline[0];
+    }
+    if (i == 'y') {
+        return aline[1];
+    }
+    if (i == 'z') {
+        return aline[2];
+    }
     printError("AGM::axialLine *&AGM::point::getAxialLine", "index (which = %c) is wrong", i);
     return aline[0];
 }
@@ -131,12 +137,18 @@ void AGM::point::setAxialLine(const std::array<AGM::axialLine *, 3> &array) {
 }
 
 void AGM::point::setAxialLine(AGM::axialLine *line, char i) {
-    if (i == 'x') aline[0] = line;
-    if (i == 'y') aline[1] = line;
-    if (i == 'z') aline[2] = line;
+    if (i == 'x') {
+        aline[0] = line;
+    }
+    if (i == 'y') {
+        aline[1] = line;
+    }
+    if (i == 'z') {
+        aline[2] = line;
+    }
 }
 
-int AGM::point::getNPts() {
+auto AGM::point::getNPts() -> int {
     return nPts;
 }
 
@@ -144,60 +156,84 @@ void AGM::point::setNPts(int i) {
     point::nPts = i;
 }
 
-std::vector<AGM::axialLine> *&AGM::point::getAxialLines(char i) {
-    if (i == 'x') return xline;
-    if (i == 'y') return yline;
-    if (i == 'z') return zline;
+auto AGM::point::getAxialLines(char i) -> std::vector<AGM::axialLine> *& {
+    if (i == 'x') {
+        return xline;
+    }
+    if (i == 'y') {
+        return yline;
+    }
+    if (i == 'z') {
+        return zline;
+    }
     printError("std::vector<AGM::axialLine> *&AGM::point::getAxialLines", "input character (which is %c) is wrong", i);
     return xline;
 }
 
 void AGM::point::setAxialLines(std::vector<AGM::axialLine> *line, char i) {
-    if (i == 'x') xline = line;
-    if (i == 'y') yline = line;
-    if (i == 'z') zline = line;
+    if (i == 'x') {
+        xline = line;
+    }
+    if (i == 'y') {
+        yline = line;
+    }
+    if (i == 'z') {
+        zline = line;
+    }
 }
 
-std::array<std::vector<AGM::plane>, 2> *&AGM::point::getPlane(std::string &str) {
-    if (str == "xy") return xyplane;
-    if (str == "yz") return yzplane;
-    if (str == "xz") return xzplane;
+auto AGM::point::getPlane(std::string &str) -> std::array<std::vector<AGM::plane>, 2> *& {
+    if (str == "xy") {
+        return xyplane;
+    }
+    if (str == "yz") {
+        return yzplane;
+    }
+    if (str == "xz") {
+        return xzplane;
+    }
     printError("std::array<std::vector<AGM::plane>, 2> *&AGM::point::getPlane", "input string (which is %s) is wrong",
                str.c_str());
     return xyplane;
 }
 
 void AGM::point::setPlane(std::array<std::vector<AGM::plane>, 2> *pln, const std::string &str) {
-    if (str == "xy") xyplane = pln;
-    if (str == "yz") yzplane = pln;
-    if (str == "xz") xzplane = pln;
+    if (str == "xy") {
+        xyplane = pln;
+    }
+    if (str == "yz") {
+        yzplane = pln;
+    }
+    if (str == "xz") {
+        xzplane = pln;
+    }
 }
 
-double &AGM::point::operator[](int i) {
+auto AGM::point::operator[](int i) -> double & {
     return xyz[i];
 }
 
-const double &AGM::point::operator[](int i) const {
+auto AGM::point::operator[](int i) const -> const double & {
     return xyz[i];
 }
 
-AGM::point *&AGM::point::operator[](AGM::STENCIL stencil) {
+auto AGM::point::operator[](AGM::STENCIL stencil) -> AGM::point *& {
     return element[stencil];
 }
 
-double &AGM::point::operator[](const std::string &string) {
+auto AGM::point::operator[](const std::string &string) -> double & {
     return values[string];
 }
 
-const double &AGM::point::operator[](const std::string &string) const {
+auto AGM::point::operator[](const std::string &string) const -> const double & {
     return values[string];
 }
 
-double AGM::point::operator-(const AGM::point &src) {
+auto AGM::point::operator-(const AGM::point &src) -> double {
     return (xyz - src.xyz).norm();
 }
 
-AGM::point &AGM::point::operator=(const AGM::point &src) {
+auto AGM::point::operator=(const AGM::point &src) -> AGM::point & {
     if (this != &src) {
         idx = src.idx;
         xyz = src.xyz;
@@ -255,7 +291,9 @@ void AGM::point::findStencilBoundary() {
 //            // return *(&aln + 1) == this->getAxialLine(lineChar);
 //        });
         auto pline0 = vec0.empty() ? vec0.end() : std::prev(vec0.end());
-        if (pline == vec.end() || pline0 == vec0.end() || !iszero(**pline - **pline0)) return nullptr;
+        if (pline == vec.end() || pline0 == vec0.end() || !iszero(**pline - **pline0)) {
+            return nullptr;
+        }
         return *pline;
     };
     auto findRightLine = [this, &isContainLine](plane *pln, char lineChar, int lineIdx, double pt) -> axialLine * {
@@ -277,7 +315,9 @@ void AGM::point::findStencilBoundary() {
 //            // return *(&aln - 1) == this->getAxialLine(lineChar);
 //        });
         auto pline0 = vec0.empty() ? vec0.end() : vec0.begin();
-        if (pline == vec.end() || pline0 == vec0.end() || !iszero(**pline - **pline0)) return nullptr;
+        if (pline == vec.end() || pline0 == vec0.end() || !iszero(**pline - **pline0)) {
+            return nullptr;
+        }
         return *pline;
     };
     auto findLeftPt = [this](axialLine *aln, int ptIdx) -> point * {
@@ -297,7 +337,9 @@ void AGM::point::findStencilBoundary() {
 
     auto assignStencil = [&](STENCIL stencil, STENCIL stencil0, STENCIL stencil1, auto func, char lineChar, int lineIdx,
                              int planeIdx, double pt, double sign, double &n) -> void {
-        if (element[stencil] == this && ispositive(sign * n)) return;
+        if (element[stencil] == this && ispositive(sign * n)) {
+            return;
+        }
         auto alin = func(this->getAxialLine(lineChar)->getPlane(planeIdx), lineChar, lineIdx, pt);
         if (alin) {
             auto leftPt = findLeftPt(alin, lineIdx);
@@ -330,28 +372,52 @@ void AGM::point::findStencilBoundary() {
         }
     };
 
-    if (aline[1]) {
-        if (!element[R]) assignStencil(R, RF, RB, findRightLine, 'y', 1, 0, xyz[1], UNITVALUE, normal[0]);
-        if (!element[L]) assignStencil(L, LF, LB, findLeftLine, 'y', 1, 0, xyz[1], -UNITVALUE, normal[0]);
-    } else if (aline[2]) {
-        if (!element[R]) assignStencil(R, RU, RD, findRightLine, 'z', 2, 1, xyz[2], UNITVALUE, normal[0]);
-        if (!element[L]) assignStencil(L, LU, LD, findLeftLine, 'z', 2, 1, xyz[2], -UNITVALUE, normal[0]);
+    if (aline[1] != nullptr) {
+        if (element[R] == nullptr) {
+            assignStencil(R, RF, RB, findRightLine, 'y', 1, 0, xyz[1], UNITVALUE, normal[0]);
+        }
+        if (element[L] == nullptr) {
+            assignStencil(L, LF, LB, findLeftLine, 'y', 1, 0, xyz[1], -UNITVALUE, normal[0]);
+        }
+    } else if (aline[2] != nullptr) {
+        if (element[R] == nullptr) {
+            assignStencil(R, RU, RD, findRightLine, 'z', 2, 1, xyz[2], UNITVALUE, normal[0]);
+        }
+        if (element[L] == nullptr) {
+            assignStencil(L, LU, LD, findLeftLine, 'z', 2, 1, xyz[2], -UNITVALUE, normal[0]);
+        }
     }
 
-    if (aline[0]) {
-        if (!element[F]) assignStencil(F, FR, FL, findRightLine, 'x', 0, 0, xyz[0], UNITVALUE, normal[1]);
-        if (!element[B]) assignStencil(B, BR, BL, findLeftLine, 'x', 0, 0, xyz[0], -UNITVALUE, normal[1]);
-    } else if (aline[2]) {
-        if (!element[F]) assignStencil(F, FU, FD, findRightLine, 'z', 2, 0, xyz[2], UNITVALUE, normal[1]);
-        if (!element[B]) assignStencil(B, BU, BD, findLeftLine, 'z', 2, 0, xyz[2], -UNITVALUE, normal[1]);
+    if (aline[0] != nullptr) {
+        if (element[F] == nullptr) {
+            assignStencil(F, FR, FL, findRightLine, 'x', 0, 0, xyz[0], UNITVALUE, normal[1]);
+        }
+        if (element[B] == nullptr) {
+            assignStencil(B, BR, BL, findLeftLine, 'x', 0, 0, xyz[0], -UNITVALUE, normal[1]);
+        }
+    } else if (aline[2] != nullptr) {
+        if (element[F] == nullptr) {
+            assignStencil(F, FU, FD, findRightLine, 'z', 2, 0, xyz[2], UNITVALUE, normal[1]);
+        }
+        if (element[B] == nullptr) {
+            assignStencil(B, BU, BD, findLeftLine, 'z', 2, 0, xyz[2], -UNITVALUE, normal[1]);
+        }
     }
 
-    if (aline[0]) {
-        if (!element[U]) assignStencil(U, UR, UL, findRightLine, 'x', 0, 1, xyz[0], UNITVALUE, normal[2]);
-        if (!element[D]) assignStencil(D, DR, DL, findLeftLine, 'x', 0, 1, xyz[0], -UNITVALUE, normal[2]);
-    } else if (aline[1]) {
-        if (!element[U]) assignStencil(U, UF, UB, findRightLine, 'y', 1, 1, xyz[1], UNITVALUE, normal[2]);
-        if (!element[D]) assignStencil(D, DF, DB, findLeftLine, 'y', 1, 1, xyz[1], -UNITVALUE, normal[2]);
+    if (aline[0] != nullptr) {
+        if (element[U] == nullptr) {
+            assignStencil(U, UR, UL, findRightLine, 'x', 0, 1, xyz[0], UNITVALUE, normal[2]);
+        }
+        if (element[D] == nullptr) {
+            assignStencil(D, DR, DL, findLeftLine, 'x', 0, 1, xyz[0], -UNITVALUE, normal[2]);
+        }
+    } else if (aline[1] != nullptr) {
+        if (element[U] == nullptr) {
+            assignStencil(U, UF, UB, findRightLine, 'y', 1, 1, xyz[1], UNITVALUE, normal[2]);
+        }
+        if (element[D] == nullptr) {
+            assignStencil(D, DF, DB, findLeftLine, 'y', 1, 1, xyz[1], -UNITVALUE, normal[2]);
+        }
     }
 }
 
@@ -453,12 +519,12 @@ void AGM::point::calculateRepresentationFormulaDirichlet() {
 
 void AGM::point::calculateRepresentationFormulaNeumann() {
     std::array<matrixRow, 3> row{};
-    row[0] = getAxialLine('x') ? calculateRepresentationFormulaNeumannOnAxial('x', 0)
-                               : calculateRepresentationFormulaNeumannOffAxial('x', 0);
-    row[1] = getAxialLine('y') ? calculateRepresentationFormulaNeumannOnAxial('y', 1)
-                               : calculateRepresentationFormulaNeumannOffAxial('y', 1);
-    row[2] = getAxialLine('z') ? calculateRepresentationFormulaNeumannOnAxial('z', 2)
-                               : calculateRepresentationFormulaNeumannOffAxial('z', 2);
+    row[0] = getAxialLine('x') != nullptr ? calculateRepresentationFormulaNeumannOnAxial('x', 0)
+                                          : calculateRepresentationFormulaNeumannOffAxial('x', 0);
+    row[1] = getAxialLine('y') != nullptr ? calculateRepresentationFormulaNeumannOnAxial('y', 1)
+                                          : calculateRepresentationFormulaNeumannOffAxial('y', 1);
+    row[2] = getAxialLine('z') != nullptr ? calculateRepresentationFormulaNeumannOnAxial('z', 2)
+                                          : calculateRepresentationFormulaNeumannOffAxial('z', 2);
     for (int i = 0; i < 3; ++i) {
         if (!row[i].empty() && !iszero(normal[i])) {
             while (row[i].back().idx >= 6 * getNPts()) {
@@ -475,7 +541,7 @@ void AGM::point::calculateRepresentationFormulaNeumann() {
     approximatePhiAndPsiAtBoundary(1);
 }
 
-AGM::matrixRow AGM::point::calculateRepresentationFormulaNeumannOnAxial(char axis, int axisInt) {
+auto AGM::point::calculateRepresentationFormulaNeumannOnAxial(char axis, int axisInt) -> AGM::matrixRow {
     auto Error = []() -> double {
         printError("AGM::point::calculateRepresentationFormulaNeumannOnAxial", "Null pointer");
         return ZEROVALUE;
@@ -491,14 +557,25 @@ AGM::matrixRow AGM::point::calculateRepresentationFormulaNeumannOnAxial(char axi
     std::string string =
             getAxialLine(axis)->front()->getIdx() == getIdx() ? "ND" : getAxialLine(axis)->back()->getIdx() == getIdx()
                                                                        ? "DN" : "";
-    double tm = ptl ? ptl->getXyz()[axisInt] : Error();
-    double tb = ptc ? ptc->getXyz()[axisInt] : Error();
-    double tp = ptr ? ptr->getXyz()[axisInt] : Error();
+    double tm = ptl != nullptr ? ptl->getXyz()[axisInt] : Error();
+    double tb = ptc != nullptr ? ptc->getXyz()[axisInt] : Error();
+    double tp = ptr != nullptr ? ptr->getXyz()[axisInt] : Error();
     double signPhi0 = axis == 'x' ? UNITVALUE : -UNITVALUE;
     double signPsi0 = axis == 'x' ? UNITVALUE : -UNITVALUE;
     bool signPhi1 = axis != 'z';
     bool signPsi1 = axis != 'y';
     auto gFunc{Greenfunction(tm, tb, tp, mp, mp)};
+
+    if (string == "ND") {
+        if (iszero(gFunc.green_function_ND(tm))) {
+            return calculateRepresentationFormulaNeumannOffAxial(axis, axisInt);
+        }
+    } else if (string == "DN") {
+        if (iszero(gFunc.green_function_DN(tp))) {
+            return calculateRepresentationFormulaNeumannOffAxial(axis, axisInt);
+        }
+    }
+
     matrixRow row{};
     if (string == "ND") {
         row[ptl->getIdx()] = -mp * gFunc.green_function_ND(tm);
@@ -557,40 +634,50 @@ AGM::matrixRow AGM::point::calculateRepresentationFormulaNeumannOnAxial(char axi
     return row;
 }
 
-AGM::matrixRow AGM::point::calculateRepresentationFormulaNeumannOffAxial(char axis, int axisInt) {
+auto AGM::point::calculateRepresentationFormulaNeumannOffAxial(char axis, int axisInt) -> AGM::matrixRow {
     auto Error = []() -> double {
         printError("AGM::point::calculateRepresentationFormulaNeumannOffAxial", "aline error");
         return ZEROVALUE;
     };
-    double tm{}, tb{}, tp{};
+    double tm{};
+    double tb{};
+    double tp{};
     if (axis == 'x') {
-        tm = element[L] ? element[L]->getXyz()[0] : aline[1] ? element[LF]->getXyz()[0] : aline[2]
-                                                                                          ? element[LU]->getXyz()[0]
-                                                                                          : Error();
+        tm = element[L] != nullptr ? element[L]->getXyz()[0] : aline[1] != nullptr ? element[LF]->getXyz()[0] :
+                                                               aline[2] != nullptr
+                                                               ? element[LU]->getXyz()[0]
+                                                               : Error();
         tb = getXyz()[0];
-        tp = element[R] ? element[R]->getXyz()[0] : aline[1] ? element[RF]->getXyz()[0] : aline[2]
-                                                                                          ? element[RU]->getXyz()[0]
-                                                                                          : Error();
+        tp = element[R] != nullptr ? element[R]->getXyz()[0] : aline[1] != nullptr ? element[RF]->getXyz()[0] :
+                                                               aline[2] != nullptr
+                                                               ? element[RU]->getXyz()[0]
+                                                               : Error();
     } else if (axis == 'y') {
-        tm = element[B] ? element[B]->getXyz()[1] : aline[0] ? element[BR]->getXyz()[1] : aline[2]
-                                                                                          ? element[BU]->getXyz()[1]
-                                                                                          : Error();
+        tm = element[B] != nullptr ? element[B]->getXyz()[1] : aline[0] != nullptr ? element[BR]->getXyz()[1] :
+                                                               aline[2] != nullptr
+                                                               ? element[BU]->getXyz()[1]
+                                                               : Error();
         tb = getXyz()[1];
-        tp = element[F] ? element[F]->getXyz()[1] : aline[0] ? element[FR]->getXyz()[1] : aline[2]
-                                                                                          ? element[FU]->getXyz()[1]
-                                                                                          : Error();
+        tp = element[F] != nullptr ? element[F]->getXyz()[1] : aline[0] != nullptr ? element[FR]->getXyz()[1] :
+                                                               aline[2] != nullptr
+                                                               ? element[FU]->getXyz()[1]
+                                                               : Error();
     } else if (axis == 'z') {
-        tm = element[D] ? element[D]->getXyz()[2] : aline[0] ? element[DR]->getXyz()[2] : aline[1]
-                                                                                          ? element[DF]->getXyz()[2]
-                                                                                          : Error();
+        tm = element[D] != nullptr ? element[D]->getXyz()[2] : aline[0] != nullptr ? element[DR]->getXyz()[2] :
+                                                               aline[1] != nullptr
+                                                               ? element[DF]->getXyz()[2]
+                                                               : Error();
         tb = getXyz()[2];
-        tp = element[U] ? element[U]->getXyz()[2] : aline[0] ? element[UR]->getXyz()[2] : aline[1]
-                                                                                          ? element[UF]->getXyz()[2]
-                                                                                          : Error();
+        tp = element[U] != nullptr ? element[U]->getXyz()[2] : aline[0] != nullptr ? element[UR]->getXyz()[2] :
+                                                               aline[1] != nullptr
+                                                               ? element[UF]->getXyz()[2]
+                                                               : Error();
     }
     char realAxis{};
     for (const auto &item: {'z', 'y', 'x'}) {
-        if (getAxialLine(item)) realAxis = item;
+        if (getAxialLine(item) != nullptr) {
+            realAxis = item;
+        }
     }
     double signPhi0 = axis == 'x' ? UNITVALUE : -UNITVALUE;
     double signPsi0 = axis == 'x' ? UNITVALUE : -UNITVALUE;
@@ -598,7 +685,9 @@ AGM::matrixRow AGM::point::calculateRepresentationFormulaNeumannOffAxial(char ax
     bool signPsi1 = axis != 'y';
     auto gFunc{Greenfunction(tm, tb, tp, mp, mp)};
     auto approximateSol = [this, &realAxis](point *ptr, point *ptl, double coefficient, int i, double d) -> matrixRow {
-        double m{ptl->getXyz()[i]}, b{xyz[i]}, p{ptr->getXyz()[i]};
+        double m{ptl->getXyz()[i]};
+        double b{xyz[i]};
+        double p{ptr->getXyz()[i]};
         auto func{Greenfunction(m, b, p, d, d)};
         auto mRow{matrixRow()};
         double signPhi0 = realAxis == 'x' ? UNITVALUE : -UNITVALUE;
@@ -628,7 +717,9 @@ AGM::matrixRow AGM::point::calculateRepresentationFormulaNeumannOffAxial(char ax
         return mRow * coefficient;
     };
     auto linearApproximation = [this](point *ptr, point *ptl, double coefficient, int i, int plus) -> matrixRow {
-        double m{ptl->getXyz()[i]}, b{xyz[i]}, p{ptr->getXyz()[i]};
+        double m{ptl->getXyz()[i]};
+        double b{xyz[i]};
+        double p{ptr->getXyz()[i]};
         auto mRow{matrixRow()};
         mRow[ptl->getIdx() + plus * getNPts()] = (p - b) / (p - m);
         mRow[ptr->getIdx() + plus * getNPts()] = (b - m) / (p - m);
@@ -639,46 +730,58 @@ AGM::matrixRow AGM::point::calculateRepresentationFormulaNeumannOffAxial(char ax
     auto assignMatrix = [&row, &approximateSol, &linearApproximation, &signPhi0, &signPsi0, &signPhi1, &signPsi1](
             point *pt, point *ptr, point *ptl, double mp0, Greenfunction *func, double d, int i, int i0,
             char c) -> void {
-        if (pt) {
+        if (pt != nullptr) {
             row[pt->getIdx()] += mp0 * func->green_function_ttau(d);
-            if (signPhi1) row[pt->getIdx() + getNPts()] += signPhi0 * func->green_integral_tau(c);
-            if (signPsi1) row[pt->getIdx() + 2 * getNPts()] += signPsi0 * func->green_integral_tau(c);
+            if (signPhi1) {
+                row[pt->getIdx() + getNPts()] += signPhi0 * func->green_integral_tau(c);
+            }
+            if (signPsi1) {
+                row[pt->getIdx() + 2 * getNPts()] += signPsi0 * func->green_integral_tau(c);
+            }
             row[pt->getIdx() + (i0 + 3) * getNPts()] += func->green_integral_tau(c);
             row[pt->getIdx() + (i0 + 6) * getNPts()] += func->green_integral_ttau(c);
         } else {
             row += approximateSol(ptr, ptl, mp0 * func->green_function_ttau(d), i, std::abs(mp0));
-            if (signPhi1) row += linearApproximation(ptr, ptl, signPhi0 * func->green_integral_tau(c), i, 1);
-            if (signPsi1) row += linearApproximation(ptr, ptl, signPsi0 * func->green_integral_tau(c), i, 2);
+            if (signPhi1) {
+                row += linearApproximation(ptr, ptl, signPhi0 * func->green_integral_tau(c), i, 1);
+            }
+            if (signPsi1) {
+                row += linearApproximation(ptr, ptl, signPsi0 * func->green_integral_tau(c), i, 2);
+            }
             row += linearApproximation(ptr, ptl, func->green_integral_tau(c), i, i0 + 3);
             row += linearApproximation(ptr, ptl, func->green_integral_ttau(c), i, i0 + 6);
         }
     };
-    if (signPhi1) row[getIdx() + getNPts()] += signPhi0 * gFunc.green_integral_tau('c');
-    if (signPsi1) row[getIdx() + 2 * getNPts()] += signPsi0 * gFunc.green_integral_tau('c');
+    if (signPhi1) {
+        row[getIdx() + getNPts()] += signPhi0 * gFunc.green_integral_tau('c');
+    }
+    if (signPsi1) {
+        row[getIdx() + 2 * getNPts()] += signPsi0 * gFunc.green_integral_tau('c');
+    }
     row[getIdx() + (axisInt + 3) * getNPts()] += gFunc.green_integral_tau('c');
     row[getIdx() + (axisInt + 6) * getNPts()] += gFunc.green_integral_ttau('c') + UNITVALUE / mp;
 
     if (axis == 'x') {
-        if (aline[1]) {
+        if (aline[1] != nullptr) {
             assignMatrix(element[R], element[RF], element[RB], -mp, &gFunc, tp, 1, 0, 'r');
             assignMatrix(element[L], element[LF], element[LB], mp, &gFunc, tm, 1, 0, 'l');
-        } else if (aline[2]) {
+        } else if (aline[2] != nullptr) {
             assignMatrix(element[R], element[RU], element[RD], -mp, &gFunc, tp, 2, 0, 'r');
             assignMatrix(element[L], element[LU], element[LD], mp, &gFunc, tm, 2, 0, 'l');
         }
     } else if (axis == 'y') {
-        if (aline[0]) {
+        if (aline[0] != nullptr) {
             assignMatrix(element[F], element[FR], element[FL], -mp, &gFunc, tp, 0, 1, 'r');
             assignMatrix(element[B], element[BR], element[BL], mp, &gFunc, tm, 0, 1, 'l');
-        } else if (aline[2]) {
+        } else if (aline[2] != nullptr) {
             assignMatrix(element[F], element[FU], element[FD], -mp, &gFunc, tp, 2, 1, 'r');
             assignMatrix(element[B], element[BU], element[BD], mp, &gFunc, tm, 2, 1, 'l');
         }
     } else if (axis == 'z') {
-        if (aline[0]) {
+        if (aline[0] != nullptr) {
             assignMatrix(element[U], element[UR], element[UL], -mp, &gFunc, tp, 0, 2, 'r');
             assignMatrix(element[D], element[DR], element[DL], mp, &gFunc, tm, 0, 2, 'l');
-        } else if (aline[1]) {
+        } else if (aline[1] != nullptr) {
             assignMatrix(element[U], element[UF], element[UB], -mp, &gFunc, tp, 1, 2, 'r');
             assignMatrix(element[D], element[DF], element[DB], mp, &gFunc, tm, 1, 2, 'l');
         }
@@ -689,10 +792,10 @@ AGM::matrixRow AGM::point::calculateRepresentationFormulaNeumannOffAxial(char ax
 void AGM::point::approximatePhiAndPsiAtBoundary(int order) {
     auto findInnerPointOfBoundary = [this]() -> point * {
         for (const auto &item: {'x', 'y', 'z'}) {
-            if (getAxialLine(item) && getAxialLine(item)->front()->getIdx() == getIdx()) {
+            if ((getAxialLine(item) != nullptr) && getAxialLine(item)->front()->getIdx() == getIdx()) {
                 return getAxialLine(item)->at(2);
             }
-            if (getAxialLine(item) && getAxialLine(item)->back()->getIdx() == getIdx()) {
+            if ((getAxialLine(item) != nullptr) && getAxialLine(item)->back()->getIdx() == getIdx()) {
                 return *std::prev(getAxialLine(item)->end() - 2);
             }
         }
@@ -700,34 +803,49 @@ void AGM::point::approximatePhiAndPsiAtBoundary(int order) {
         return nullptr;
     };
     auto findStencil = [this]() -> STENCIL {
-        if (getAxialLine('x') && getAxialLine('x')->front()->getIdx() == getIdx()) return L;
-        if (getAxialLine('x') && getAxialLine('x')->back()->getIdx() == getIdx()) return R;
-        if (getAxialLine('y') && getAxialLine('y')->front()->getIdx() == getIdx()) return B;
-        if (getAxialLine('y') && getAxialLine('y')->back()->getIdx() == getIdx()) return F;
-        if (getAxialLine('z') && getAxialLine('z')->front()->getIdx() == getIdx()) return D;
-        if (getAxialLine('z') && getAxialLine('z')->back()->getIdx() == getIdx()) return U;
+        if ((getAxialLine('x') != nullptr) && getAxialLine('x')->front()->getIdx() == getIdx()) {
+            return L;
+        }
+        if ((getAxialLine('x') != nullptr) && getAxialLine('x')->back()->getIdx() == getIdx()) {
+            return R;
+        }
+        if ((getAxialLine('y') != nullptr) && getAxialLine('y')->front()->getIdx() == getIdx()) {
+            return B;
+        }
+        if ((getAxialLine('y') != nullptr) && getAxialLine('y')->back()->getIdx() == getIdx()) {
+            return F;
+        }
+        if ((getAxialLine('z') != nullptr) && getAxialLine('z')->front()->getIdx() == getIdx()) {
+            return D;
+        }
+        if ((getAxialLine('z') != nullptr) && getAxialLine('z')->back()->getIdx() == getIdx()) {
+            return U;
+        }
         printError("AGM::point::approximatePhiAndPsiAtBoundary", "findStencil");
         return R;
     };
     auto pt{*findInnerPointOfBoundary()};
     auto stencil{findStencil()};
-    double tm{}, tb{}, tp{};
-    if (getAxialLine('x')) {
+    double tm{};
+    double tb{};
+    double tp{};
+    if (getAxialLine('x') != nullptr) {
         tm = pt[L]->getXyz()[0];
         tb = pt.getXyz()[0];
         tp = pt[R]->getXyz()[0];
-    } else if (getAxialLine('y')) {
+    } else if (getAxialLine('y') != nullptr) {
         tm = pt[B]->getXyz()[1];
         tb = pt.getXyz()[1];
         tp = pt[F]->getXyz()[1];
-    } else if (getAxialLine('z')) {
+    } else if (getAxialLine('z') != nullptr) {
         tm = pt[D]->getXyz()[2];
         tb = pt.getXyz()[2];
         tp = pt[U]->getXyz()[2];
     }
     auto secondOrderExtrapolation = [this, &pt](int i, double m, double b, double p, STENCIL stencil1,
                                                 STENCIL stencil2) -> void {
-        double d{(p - m) * (p - b) * (b - m)}, t0{xyz[i]};
+        double d{(p - m) * (p - b) * (b - m)};
+        double t0{xyz[i]};
         auto firstTerm = [&t0, &d](double w0, double w1) -> double { return t0 * t0 * (w0 - w1) / d; };
         auto secondTerm = [&t0, &d](double w0, double w1) -> double { return t0 * (w0 * w0 - w1 * w1) / d; };
         auto thirdTerm = [&d](double w0, double w1) -> double { return w0 * w1 * (w0 - w1) / d; };
@@ -745,7 +863,8 @@ void AGM::point::approximatePhiAndPsiAtBoundary(int order) {
         solMatrixRow[2][getIdx() + 2 * getNPts()] = -UNITVALUE;
     };
     auto firstOrderExtrapolation = [this, &pt](int i, double t1, double t2, STENCIL stencil0) -> void {
-        double d{t2 - t1}, t0{xyz[i]};
+        double d{t2 - t1};
+        double t0{xyz[i]};
         auto firstTerm = [&t0, &d]() -> double { return t0 / d; };
         auto secondTerm = [&d](double t) -> double { return t / d; };
         auto firstOrder = [&firstTerm, &secondTerm](double t) -> double { return -firstTerm() + secondTerm(t); };
@@ -764,7 +883,7 @@ void AGM::point::approximatePhiAndPsiAtBoundary(int order) {
         solMatrixRow[2][pt[stencil1]->getIdx() + 2 * getNPts()] = UNITVALUE;
         solMatrixRow[2][getIdx() + 2 * getNPts()] = -UNITVALUE;
     };
-    if (getAxialLine('x')) {
+    if (getAxialLine('x') != nullptr) {
         if (order == 2) {
             secondOrderExtrapolation(0, tm, tb, tp, L, R);
         } else if (order == 1) {
@@ -780,7 +899,7 @@ void AGM::point::approximatePhiAndPsiAtBoundary(int order) {
         } else {
             printError("AGM::point::approximatePhiAndPsiAtBoundary", "order (which is %d) is wrong", order);
         }
-    } else if (getAxialLine('y')) {
+    } else if (getAxialLine('y') != nullptr) {
         if (order == 2) {
             secondOrderExtrapolation(1, tm, tb, tp, B, F);
         } else if (order == 1) {
@@ -796,7 +915,7 @@ void AGM::point::approximatePhiAndPsiAtBoundary(int order) {
         } else {
             printError("AGM::point::approximatePhiAndPsiAtBoundary", "order (which is %d) is wrong", order);
         }
-    } else if (getAxialLine('z')) {
+    } else if (getAxialLine('z') != nullptr) {
         if (order == 2) {
             secondOrderExtrapolation(2, tm, tb, tp, D, U);
         } else if (order == 1) {
@@ -1015,12 +1134,12 @@ void AGM::point::makeDerivativesCross() {
 }
 
 void AGM::point::makeDerivativesBoundary() {
-    deriMatrixRow[0] = getAxialLine('x') ? calculateRepresentationFormulaNeumannOnAxial('x', 0)
-                                         : calculateRepresentationFormulaNeumannOffAxial('x', 0);
-    deriMatrixRow[1] = getAxialLine('y') ? calculateRepresentationFormulaNeumannOnAxial('y', 1)
-                                         : calculateRepresentationFormulaNeumannOffAxial('y', 1);
-    deriMatrixRow[2] = getAxialLine('z') ? calculateRepresentationFormulaNeumannOnAxial('z', 2)
-                                         : calculateRepresentationFormulaNeumannOffAxial('z', 2);
+    deriMatrixRow[0] = getAxialLine('x') != nullptr ? calculateRepresentationFormulaNeumannOnAxial('x', 0)
+                                                    : calculateRepresentationFormulaNeumannOffAxial('x', 0);
+    deriMatrixRow[1] = getAxialLine('y') != nullptr ? calculateRepresentationFormulaNeumannOnAxial('y', 1)
+                                                    : calculateRepresentationFormulaNeumannOffAxial('y', 1);
+    deriMatrixRow[2] = getAxialLine('z') != nullptr ? calculateRepresentationFormulaNeumannOnAxial('z', 2)
+                                                    : calculateRepresentationFormulaNeumannOffAxial('z', 2);
 }
 
 void AGM::point::calculateDerivatives(const std::vector<point> *points, const std::function<double(int)> &f,
@@ -1062,10 +1181,10 @@ void AGM::point::calculateDerivatives(const std::vector<point> *points, const st
 void AGM::point::approximateNaNDerivatives(const std::vector<AGM::point> *points) {
     auto findInnerPointOfBoundary = [this]() -> point * {
         for (const auto &item: {'x', 'y', 'z'}) {
-            if (getAxialLine(item) && getAxialLine(item)->front()->getIdx() == getIdx()) {
+            if ((getAxialLine(item) != nullptr) && getAxialLine(item)->front()->getIdx() == getIdx()) {
                 return getAxialLine(item)->at(1);
             }
-            if (getAxialLine(item) && getAxialLine(item)->back()->getIdx() == getIdx()) {
+            if ((getAxialLine(item) != nullptr) && getAxialLine(item)->back()->getIdx() == getIdx()) {
                 return *std::prev(getAxialLine(item)->end() - 1);
             }
         }
@@ -1073,9 +1192,15 @@ void AGM::point::approximateNaNDerivatives(const std::vector<AGM::point> *points
                    "findInnerPointOfBoundary, condition (which is %c) may be not boundary", getCondition());
         return nullptr;
     };
-    if (std::isnan(values["dx"])) values["dx"] = findInnerPointOfBoundary()->getValue()["dx"];
-    if (std::isnan(values["dy"])) values["dy"] = findInnerPointOfBoundary()->getValue()["dy"];
-    if (std::isnan(values["dz"])) values["dz"] = findInnerPointOfBoundary()->getValue()["dz"];
+    if (std::isnan(values["dx"])) {
+        values["dx"] = findInnerPointOfBoundary()->getValue()["dx"];
+    }
+    if (std::isnan(values["dy"])) {
+        values["dy"] = findInnerPointOfBoundary()->getValue()["dy"];
+    }
+    if (std::isnan(values["dz"])) {
+        values["dz"] = findInnerPointOfBoundary()->getValue()["dz"];
+    }
 }
 
 void AGM::point::calculateSecondDerivatives(const std::function<double(int)> &f, const std::function<double(int)> &g,

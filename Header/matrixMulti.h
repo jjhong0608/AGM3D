@@ -22,7 +22,6 @@ namespace AGM {
 
         void factorizeMatrix() override;
 
-
     private:
         std::vector<pt> *pts0{}, *pts1{};
     };

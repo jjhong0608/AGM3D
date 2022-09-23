@@ -7,19 +7,42 @@
 void
 AGM::readFile::loadData(const std::string &filename, std::vector<AGM::point> *pts, std::vector<AGM::axialLine> *alineX,
                         std::vector<AGM::axialLine> *alineY, std::vector<AGM::axialLine> *alineZ,
-                        std::array<std::vector<AGM::plane>, 2> *planeXY, std::array<std::vector<AGM::plane>, 2> *planeYZ,
+                        std::array<std::vector<AGM::plane>, 2> *planeXY,
+                        std::array<std::vector<AGM::plane>, 2> *planeYZ,
                         std::array<std::vector<AGM::plane>, 2> *planeXZ) {
     std::ifstream f(filename);
-    std::string line{}, tempString{};
-    int nRegion{}, idx{}, index{}, tempInteger{}, nAxial{}, nPlane{};
-    int nCross{}, nBound{}, nXAxial{}, nYAxial{}, nZAxial{}, nXYPlane{}, nYZPlane{}, nXZPlane{};
+    std::string line{};
+    std::string tempString{};
+    int nRegion{};
+    int idx{};
+    int index{};
+    int tempInteger{};
+    int nAxial{};
+    int nPlane{};
+    int nCross{};
+    int nBound{};
+    int nXAxial{};
+    int nYAxial{};
+    int nZAxial{};
+    int nXYPlane{};
+    int nYZPlane{};
+    int nXZPlane{};
     coordinate normal{};
-    double mp{}, bv{};
+    double mp{};
+    double bv{};
     char bc{};
     point pt{};
-    std::vector<std::vector<int>> xline{}, yline{}, zline{};
-    std::vector<std::vector<int>> xyXplane{}, xyYplane{}, yzYplane{}, yzZplane{}, xzXplane{}, xzZplane{};
-    std::vector<int> aline{}, pln{};
+    std::vector<std::vector<int>> xline{};
+    std::vector<std::vector<int>> yline{};
+    std::vector<std::vector<int>> zline{};
+    std::vector<std::vector<int>> xyXplane{};
+    std::vector<std::vector<int>> xyYplane{};
+    std::vector<std::vector<int>> yzYplane{};
+    std::vector<std::vector<int>> yzZplane{};
+    std::vector<std::vector<int>> xzXplane{};
+    std::vector<std::vector<int>> xzZplane{};
+    std::vector<int> aline{};
+    std::vector<int> pln{};
 
     if (!f.is_open()) {
         printError("AGM::readFile::loadData", "No Axial data file: \"%s\"\nPlease check file name", filename.c_str());
@@ -29,7 +52,9 @@ AGM::readFile::loadData(const std::string &filename, std::vector<AGM::point> *pt
 
     while (!f.eof()) {
         std::getline(f, line);
-        if (line.empty()) std::getline(f, line);
+        if (line.empty()) {
+            std::getline(f, line);
+        }
         if (line.find("ENDREGION") != std::string::npos) {
             idx = 0;
             std::getline(f, line);
@@ -268,24 +293,48 @@ AGM::readFile::loadData(const std::string &filename, std::vector<AGM::point> *pt
             if (item0 == item.front()) {
                 if (item0->getCondition() != 'I') {
                     (*item0)[L] = item0;
-                    if (ispositive(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[F] = item0;
-                    if (isnegative(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[B] = item0;
-                    if (iszero(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[F] = (*item0)[B] = item0;
-                    if (ispositive(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[U] = item0;
-                    if (isnegative(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[D] = item0;
-                    if (iszero(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[U] = (*item0)[D] = item0;
+                    if (ispositive(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[F] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[B] = item0;
+                    }
+                    if (iszero(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[F] = (*item0)[B] = item0;
+                    }
+                    if (ispositive(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[U] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[D] = item0;
+                    }
+                    if (iszero(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[U] = (*item0)[D] = item0;
+                    }
                 }
                 prev = item0;
             } else if (item0 == item.back()) {
                 (*prev)[R] = item0;
                 if (item0->getCondition() != 'I') {
                     (*item0)[R] = item0;
-                    if (ispositive(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[F] = item0;
-                    if (isnegative(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[B] = item0;
-                    if (iszero(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[F] = (*item0)[B] = item0;
-                    if (ispositive(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[U] = item0;
-                    if (isnegative(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[D] = item0;
-                    if (iszero(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[U] = (*item0)[D] = item0;
+                    if (ispositive(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[F] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[B] = item0;
+                    }
+                    if (iszero(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[F] = (*item0)[B] = item0;
+                    }
+                    if (ispositive(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[U] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[D] = item0;
+                    }
+                    if (iszero(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[U] = (*item0)[D] = item0;
+                    }
                 }
                 (*item0)[L] = prev;
             } else {
@@ -300,24 +349,48 @@ AGM::readFile::loadData(const std::string &filename, std::vector<AGM::point> *pt
             if (item0 == item.front()) {
                 if (item0->getCondition() != 'I') {
                     (*item0)[B] = item0;
-                    if (ispositive(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[R] = item0;
-                    if (isnegative(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[L] = item0;
-                    if (iszero(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[R] = (*item0)[L] = item0;
-                    if (ispositive(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[U] = item0;
-                    if (isnegative(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[D] = item0;
-                    if (iszero(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[U] = (*item0)[D] = item0;
+                    if (ispositive(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[R] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[L] = item0;
+                    }
+                    if (iszero(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[R] = (*item0)[L] = item0;
+                    }
+                    if (ispositive(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[U] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[D] = item0;
+                    }
+                    if (iszero(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[U] = (*item0)[D] = item0;
+                    }
                 }
                 prev = item0;
             } else if (item0 == item.back()) {
                 (*prev)[F] = item0;
                 if (item0->getCondition() != 'I') {
                     (*item0)[F] = item0;
-                    if (ispositive(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[R] = item0;
-                    if (isnegative(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[L] = item0;
-                    if (iszero(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[R] = (*item0)[L] = item0;
-                    if (ispositive(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[U] = item0;
-                    if (isnegative(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[D] = item0;
-                    if (iszero(item0->getNormal()[2]) && !item0->getAxialLine('z')) (*item0)[U] = (*item0)[D] = item0;
+                    if (ispositive(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[R] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[L] = item0;
+                    }
+                    if (iszero(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[R] = (*item0)[L] = item0;
+                    }
+                    if (ispositive(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[U] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[D] = item0;
+                    }
+                    if (iszero(item0->getNormal()[2]) && (item0->getAxialLine('z') == nullptr)) {
+                        (*item0)[U] = (*item0)[D] = item0;
+                    }
                 }
                 (*item0)[B] = prev;
             } else {
@@ -332,24 +405,48 @@ AGM::readFile::loadData(const std::string &filename, std::vector<AGM::point> *pt
             if (item0 == item.front()) {
                 if (item0->getCondition() != 'I') {
                     (*item0)[D] = item0;
-                    if (ispositive(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[R] = item0;
-                    if (isnegative(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[L] = item0;
-                    if (iszero(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[R] = (*item0)[L] = item0;
-                    if (ispositive(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[F] = item0;
-                    if (isnegative(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[B] = item0;
-                    if (iszero(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[F] = (*item0)[B] = item0;
+                    if (ispositive(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[R] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[L] = item0;
+                    }
+                    if (iszero(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[R] = (*item0)[L] = item0;
+                    }
+                    if (ispositive(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[F] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[B] = item0;
+                    }
+                    if (iszero(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[F] = (*item0)[B] = item0;
+                    }
                 }
                 prev = item0;
             } else if (item0 == item.back()) {
                 (*prev)[U] = item0;
                 if (item0->getCondition() != 'I') {
                     (*item0)[U] = item0;
-                    if (ispositive(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[R] = item0;
-                    if (isnegative(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[L] = item0;
-                    if (iszero(item0->getNormal()[0]) && !item0->getAxialLine('x')) (*item0)[R] = (*item0)[L] = item0;
-                    if (ispositive(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[F] = item0;
-                    if (isnegative(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[B] = item0;
-                    if (iszero(item0->getNormal()[1]) && !item0->getAxialLine('y')) (*item0)[F] = (*item0)[B] = item0;
+                    if (ispositive(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[R] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[L] = item0;
+                    }
+                    if (iszero(item0->getNormal()[0]) && (item0->getAxialLine('x') == nullptr)) {
+                        (*item0)[R] = (*item0)[L] = item0;
+                    }
+                    if (ispositive(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[F] = item0;
+                    }
+                    if (isnegative(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[B] = item0;
+                    }
+                    if (iszero(item0->getNormal()[1]) && (item0->getAxialLine('y') == nullptr)) {
+                        (*item0)[F] = (*item0)[B] = item0;
+                    }
                 }
                 (*item0)[D] = prev;
             } else {
@@ -450,17 +547,29 @@ AGM::readFile::loadData(const std::string &filename, std::vector<AGM::point> *pt
     auto element = AGM::axialElement{};
     for (auto &item: *pts) {
         element = item.getElement();
-        if (item.getAxialLine('x')) {
-            if (element[R]) element[R] = item[R]->getElement()[R];
-            if (element[L]) element[L] = item[L]->getElement()[L];
+        if (item.getAxialLine('x') != nullptr) {
+            if (element[R] != nullptr) {
+                element[R] = item[R]->getElement()[R];
+            }
+            if (element[L] != nullptr) {
+                element[L] = item[L]->getElement()[L];
+            }
         }
-        if (item.getAxialLine('y')) {
-            if (element[F]) element[F] = item[F]->getElement()[F];
-            if (element[B]) element[B] = item[B]->getElement()[B];
+        if (item.getAxialLine('y') != nullptr) {
+            if (element[F] != nullptr) {
+                element[F] = item[F]->getElement()[F];
+            }
+            if (element[B] != nullptr) {
+                element[B] = item[B]->getElement()[B];
+            }
         }
-        if (item.getAxialLine('z')) {
-            if (element[U]) element[U] = item[U]->getElement()[U];
-            if (element[D]) element[D] = item[D]->getElement()[D];
+        if (item.getAxialLine('z') != nullptr) {
+            if (element[U] != nullptr) {
+                element[U] = item[U]->getElement()[U];
+            }
+            if (element[D] != nullptr) {
+                element[D] = item[D]->getElement()[D];
+            }
         }
     }
 }

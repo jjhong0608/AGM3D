@@ -15,7 +15,8 @@ namespace AGM {
     class axialLine : public std::vector<point *> {
     private:
         char mark{};
-        std::array<double, 6> coordinate{};
+        static const int coordinateNumber{6};
+        std::array<double, coordinateNumber> coordinate{};
         std::array<plane *, 2> plane{};
 
     public:
@@ -25,17 +26,17 @@ namespace AGM {
 
         virtual ~axialLine();
 
-        [[nodiscard]] char getMark() const;
+        [[nodiscard]] auto getMark() const -> char;
 
         void setMark(char i);
 
-        AGM::plane *getPlane(int i) const;
+        auto getPlane(int i) const -> AGM::plane *;
 
         void setPlane(AGM::plane *pPlane, int i);
 
-        double &operator[](int i);
+        auto operator[](int i) -> double &;
 
-        double operator-(axialLine &line);
+        auto operator-(axialLine &line) -> double;
     };
 }
 

@@ -17,7 +17,7 @@ namespace AGM {
 
         virtual ~solver();
 
-        std::vector<point> *getPts() const;
+        auto getPts() const -> std::vector<point> *;
 
         void setPts(std::vector<point> *vector);
 

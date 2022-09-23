@@ -22,7 +22,7 @@ namespace AGM {
 
         virtual ~matrixNormal();
 
-        int getFixedPointIdx() const;
+        auto getFixedPointIdx() const -> int;
 
         void setFixedPointIdx(int i);
 

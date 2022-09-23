@@ -22,11 +22,11 @@ namespace AGM {
 
         virtual ~plane();
 
-        [[nodiscard]] const std::string &getMark() const;
+        [[nodiscard]] auto getMark() const -> const std::string &;
 
         void setMark(const std::string &string);
 
-        [[nodiscard]] double getCoordinate() const;
+        [[nodiscard]] auto getCoordinate() const -> double;
 
         void setCoordinate(double d);
 

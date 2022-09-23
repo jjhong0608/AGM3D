@@ -17,7 +17,9 @@ void AGM::matrixMulti<pt>::factorizeMatrix() {
     int size = int(matrix<pt>::pts->size());
     matrix<pt>::pPram.n = size * 3;
     matrix<pt>::pPram.nrhs = 3;
-    for (auto &i: matrix<pt>::pPram.iparm) i = 0;
+    for (auto &i: matrix<pt>::pPram.iparm) {
+        i = 0;
+    }
     matrix<pt>::pPram.iparm[0] = 1;         /* No solver default */
     matrix<pt>::pPram.iparm[1] = 3;         /* Fill-in reordering from METIS */
     matrix<pt>::pPram.iparm[3] = 0;         /* No iterative-direct algorithm */
@@ -44,7 +46,9 @@ void AGM::matrixMulti<pt>::factorizeMatrix() {
     matrix<pt>::pPram.mtype = 11;
     matrix<pt>::pPram.iparm[60] = 1;
 
-    for (auto &i: matrix<pt>::pPram.ppt) i = nullptr;
+    for (auto &i: matrix<pt>::pPram.ppt) {
+        i = nullptr;
+    }
 
     matrix<pt>::pPram.phase = 12;
     pardiso(matrix<pt>::pPram.ppt, &matrix<pt>::pPram.maxfct, &matrix<pt>::pPram.mnum, &matrix<pt>::pPram.mtype,
@@ -75,7 +79,9 @@ void AGM::matrixMulti<pt>::calculateMatrix() {
         rb[i + 8 * size] = pts1->at(i).getRb()[2];
     }
     double x[3 * matrix<pt>::pPram.n];
-    for (auto &i: x) i = ZEROVALUE;
+    for (auto &i: x) {
+        i = ZEROVALUE;
+    }
     matrix<pt>::pPram.phase = 33;
     pardiso(matrix<pt>::pPram.ppt, &matrix<pt>::pPram.maxfct, &matrix<pt>::pPram.mnum, &matrix<pt>::pPram.mtype,
             &matrix<pt>::pPram.phase, &matrix<pt>::pPram.n, matrix<pt>::ent, matrix<pt>::ia, matrix<pt>::ja,

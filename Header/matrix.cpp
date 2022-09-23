@@ -11,7 +11,7 @@ template<typename pt>
 AGM::matrix<pt>::matrix(std::vector<pt> *pts) : pts(pts) {}
 
 template<typename pt>
-int *AGM::matrix<pt>::getIa() const {
+auto AGM::matrix<pt>::getIa() const -> int * {
     return ia;
 }
 
@@ -21,7 +21,7 @@ void AGM::matrix<pt>::setIa(int *pInt) {
 }
 
 template<typename pt>
-int *AGM::matrix<pt>::getJa() const {
+auto AGM::matrix<pt>::getJa() const -> int * {
     return ja;
 }
 
@@ -31,7 +31,7 @@ void AGM::matrix<pt>::setJa(int *pInt) {
 }
 
 template<typename pt>
-double *AGM::matrix<pt>::getEnt() const {
+auto AGM::matrix<pt>::getEnt() const -> double * {
     return ent;
 }
 
@@ -41,7 +41,7 @@ void AGM::matrix<pt>::setEnt(double *pDouble) {
 }
 
 template<typename pt>
-std::vector<pt> *AGM::matrix<pt>::getPts() const {
+auto AGM::matrix<pt>::getPts() const -> std::vector<pt> * {
     return pts;
 }
 
@@ -52,7 +52,7 @@ void AGM::matrix<pt>::setPts(std::vector<pt> *vector) {
 
 template<typename pt>
 void AGM::matrix<pt>::makeMatrix() {
-    if (!ia) {
+    if (ia == nullptr) {
         int nEntry{};
         for (const auto &item: *pts) {
             for (const auto &item0: item.getSolMatrixRow()) {
@@ -63,7 +63,9 @@ void AGM::matrix<pt>::makeMatrix() {
         ia = new int[3 * pts->size() + 1];
         ja = new int[nEntry];
         ent = new double[nEntry];
-        int iaIdx{}, jaIdx{}, iaValue{1};
+        int iaIdx{};
+        int jaIdx{};
+        int iaValue{1};
         auto assignMatrix = [&](int i) -> void {
             for (const auto &item: *pts) {
                 iaValue += int(item.getSolMatrixRow()[i].size());
@@ -75,7 +77,9 @@ void AGM::matrix<pt>::makeMatrix() {
             }
         };
         ia[iaIdx++] = iaValue;
-        for (int i = 0; i < 3; ++i) assignMatrix(i);
+        for (int i = 0; i < 3; ++i) {
+            assignMatrix(i);
+        }
     } else {
         printError("AGM::matrix<pt>::makeMatrix()");
     }
@@ -86,7 +90,9 @@ void AGM::matrix<pt>::factorizeMatrix() {
     int size = int(pts->size());
     pPram.n = size * 3;
     pPram.nrhs = 1;
-    for (auto &i: pPram.iparm) i = 0;
+    for (auto &i: pPram.iparm) {
+        i = 0;
+    }
     pPram.iparm[0] = 1;         /* No solver default */
     pPram.iparm[1] = 3;         /* Fill-in reordering from METIS */
     pPram.iparm[3] = 0;         /* No iterative-direct algorithm */
@@ -113,7 +119,9 @@ void AGM::matrix<pt>::factorizeMatrix() {
     pPram.mtype = 11;
     pPram.iparm[60] = 1;
 
-    for (auto &i: pPram.ppt) i = nullptr;
+    for (auto &i: pPram.ppt) {
+        i = nullptr;
+    }
 
     pPram.phase = 12;
     pardiso(pPram.ppt, &pPram.maxfct, &pPram.mnum, &pPram.mtype, &pPram.phase, &pPram.n, ent, ia, ja, &pPram.idum,
@@ -137,7 +145,9 @@ void AGM::matrix<pt>::calculateMatrix() {
         rb[i + 2 * size] = pts->at(i).getRb()[2];
     }
     double x[pPram.n];
-    for (auto &i: x) i = ZEROVALUE;
+    for (auto &i: x) {
+        i = ZEROVALUE;
+    }
     pPram.phase = 33;
     pardiso(pPram.ppt, &pPram.maxfct, &pPram.mnum, &pPram.mtype, &pPram.phase, &pPram.n, ent, ia, ja, &pPram.idum,
             &pPram.nrhs, pPram.iparm, &pPram.msglvl, rb, x, &pPram.error);

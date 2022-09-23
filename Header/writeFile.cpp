@@ -11,7 +11,7 @@ template<typename T>
 AGM::writeFile<T>::writeFile(std::vector<T> *pts) : pts(pts) {}
 
 template<typename T>
-T *AGM::writeFile<T>::getPt() const {
+auto AGM::writeFile<T>::getPt() const -> T * {
     return pt;
 }
 
@@ -21,7 +21,7 @@ void AGM::writeFile<T>::setPt(T *t) {
 }
 
 template<typename T>
-std::vector<T> *AGM::writeFile<T>::getPts() const {
+auto AGM::writeFile<T>::getPts() const -> std::vector<T> * {
     return pts;
 }
 
@@ -70,8 +70,9 @@ auto AGM::writeFile<T>::calculateErrorAtPoint(const std::string &string) {
 }
 
 template<typename T>
-double AGM::writeFile<T>::calculateError(const std::string &string) {
-    double numerator{}, denominator{};
+auto AGM::writeFile<T>::calculateError(const std::string &string) -> double {
+    double numerator{};
+    double denominator{};
     auto error = std::pair<double, double>{};
     for (auto &item: *pts) {
         pt = &item;

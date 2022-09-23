@@ -17,7 +17,7 @@ AGM::matrixNormal<pt>::matrixNormal(std::vector<pt> *pts, int fixedPointIdx):mat
 
 
 template<typename pt>
-int AGM::matrixNormal<pt>::getFixedPointIdx() const {
+auto AGM::matrixNormal<pt>::getFixedPointIdx() const -> int {
     return fixedPointIdx;
 }
 
@@ -68,13 +68,13 @@ void AGM::matrixNormal<pt>::makeMatrix() {
     matrix<pt>::ia = new int[A.outerSize() + 1];
     matrix<pt>::ja = new int[A.nonZeros()];
     matrix<pt>::ent = new double[A.nonZeros()];
-    auto oPtr{A.outerIndexPtr()};
+    auto *oPtr{A.outerIndexPtr()};
     for (int j = 0; j < A.outerSize() + 1; ++j) {
         matrix<pt>::ia[j] = *oPtr + 1;
         ++oPtr;
     }
-    auto iPtr{A.innerIndexPtr()};
-    auto vPtr{A.valuePtr()};
+    auto *iPtr{A.innerIndexPtr()};
+    auto *vPtr{A.valuePtr()};
     for (int j = 0; j < A.nonZeros(); ++j) {
         matrix<pt>::ja[j] = *iPtr + 1;
         matrix<pt>::ent[j] = *vPtr;
@@ -133,7 +133,9 @@ void AGM::matrixNormal<pt>::factorizeMatrix() {
     matrix<pt>::pPram.mtype = 11;
     matrix<pt>::pPram.iparm[60] = 1;
 
-    for (auto &i: matrix<pt>::pPram.ppt) i = nullptr;
+    for (auto &i: matrix<pt>::pPram.ppt) {
+        i = nullptr;
+    }
 
     matrix<pt>::pPram.phase = 12;
     pardiso(matrix<pt>::pPram.ppt, &matrix<pt>::pPram.maxfct, &matrix<pt>::pPram.mnum, &matrix<pt>::pPram.mtype,
@@ -166,7 +168,9 @@ void AGM::matrixNormal<pt>::calculateMatrix() {
         }
     }
     double x[matrix<pt>::pPram.n];
-    for (auto &i: x) i = ZEROVALUE;
+    for (auto &i: x) {
+        i = ZEROVALUE;
+    }
     matrix<pt>::pPram.phase = 33;
     pardiso(matrix<pt>::pPram.ppt, &matrix<pt>::pPram.maxfct, &matrix<pt>::pPram.mnum, &matrix<pt>::pPram.mtype,
             &matrix<pt>::pPram.phase, &matrix<pt>::pPram.n, matrix<pt>::ent, matrix<pt>::ia, matrix<pt>::ja,

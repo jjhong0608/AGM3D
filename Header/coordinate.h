@@ -14,19 +14,19 @@ namespace AGM {
 
         coordinate(double x, double y, double z);
 
-        [[nodiscard]] double norm() const;
+        [[nodiscard]] auto norm() const -> double;
 
         virtual ~coordinate();
 
-        coordinate operator+(const coordinate &src) const;
+        auto operator+(const coordinate &src) const -> coordinate;
 
-        coordinate operator-(const coordinate &src) const;
+        auto operator-(const coordinate &src) const -> coordinate;
 
-        coordinate operator*(double d) const;
+        auto operator*(double d) const -> coordinate;
 
-        bool operator==(const coordinate &src) const;
+        auto operator==(const coordinate &src) const -> bool;
 
-        bool operator!=(const coordinate &src) const;
+        auto operator!=(const coordinate &src) const -> bool;
 
     };
 }

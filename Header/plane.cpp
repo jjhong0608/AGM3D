@@ -12,7 +12,7 @@ AGM::plane::plane(std::string mark) : mark(std::move(mark)) {}
 
 AGM::plane::plane(std::string mark, double coordinate) : mark(std::move(mark)), coordinate(coordinate) {}
 
-const std::string &AGM::plane::getMark() const {
+auto AGM::plane::getMark() const -> const std::string & {
     return mark;
 }
 
@@ -20,7 +20,7 @@ void AGM::plane::setMark(const std::string &string) {
     plane::mark = string;
 }
 
-double AGM::plane::getCoordinate() const {
+auto AGM::plane::getCoordinate() const -> double {
     return coordinate;
 }
 

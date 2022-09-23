@@ -6,7 +6,7 @@
 
 AGM::solver::solver(std::vector<AGM::point> *pts) : pts(pts) {}
 
-std::vector<AGM::point> *AGM::solver::getPts() const {
+auto AGM::solver::getPts() const -> std::vector<AGM::point> * {
     return pts;
 }
 
@@ -182,6 +182,8 @@ void AGM::solver::heatSolver() {
 void AGM::solver::NavierStokesSolver() {
     auto f{AGM::NavierStokesFunction()};
     int fixedPointIndex{};
+    int presentIter{};
+    int saveIter{};
     point::setNPts(int(pts->size()));
     auto uvel{std::vector<pointHeat>(point::getNPts())};
     auto vvel{std::vector<pointHeat>(point::getNPts())};
@@ -357,7 +359,27 @@ void AGM::solver::NavierStokesSolver() {
     auto pRhsZ1 = [&](int i) -> double {
         return -wvel.at(i)["dz"] / pointHeat::getDelta();
     };
+    auto findSaveIter = [&presentIter, &saveIter]() -> void {
+        saveIter = int(std::floor(NavierStokesFunction::writeTime() / NavierStokesFunction::deltaTime() + HALFVALUE));
+        presentIter = int(std::floor(
+                (std::fmod(NavierStokesFunction::initialTime(), NavierStokesFunction::writeTime())) /
+                NavierStokesFunction::deltaTime() + HALFVALUE));
+        std::cout << "Initial iteration number = " << presentIter << ",\n" << "file will be saved every " << saveIter
+                  << " iterations\n";
+    };
     auto copyPointInformation = [this, &uvel, &vvel, &wvel, &fixedPointIndex]() -> void {
+        for (int i = 0; i < point::getNPts(); ++i) {
+            if (pts->at(i).getCondition() == 'D') {
+                if (isclose(pts->at(i).getNormal()[0], UNITVALUE) && (pts->at(i)[1] < 4e0)) {
+                    pts->at(i).setCondition('N');
+                }
+
+                if (pts->at(i).getNormal()[0] > 1e-5 && iszero(pts->at(i).getNormal()[2], 1e-3) && isclose(pts->at(i).getNormal()[0], pts->at(i).getNormal()[1], 1e-3)) {
+                    pts->at(i).setCondition('N');
+                }
+            }
+        }
+
         for (int i = 0; i < point::getNPts(); ++i) {
             uvel.at(i).point::operator=(pts->at(i));
             uvel.at(i).findStencil(&(pts->at(i).getElement()), &uvel);
@@ -387,7 +409,7 @@ void AGM::solver::NavierStokesSolver() {
             f.assignBoundaryValue(uvel.at(i), vvel.at(i), wvel.at(i));
         }
 //        f.loadPreviousValue(
-//                "/home/jjhong0608/docker/AGM3D/Navier-Stokes/Lid-driven_cavity/Re1000_2/AGM_Result_2.000000", &puvel,
+//                "/home/jjhong0608/docker/AGM3D/Navier-Stokes/Blood_flow/10/AGM_Result_3.3", &puvel,
 //                &pvvel, &pwvel, &ppvel);
     };
     auto assignBoundaryValue = [&f, &uvel, &vvel, &wvel]() -> void {
@@ -437,7 +459,9 @@ void AGM::solver::NavierStokesSolver() {
         }
     };
     auto calculateDifferentiationVelocity1 = [&]() -> void {
-        double dx{}, dy{}, dz{};
+        double dx{};
+        double dy{};
+        double dz{};
         #pragma omp parallel for private(dx, dy, dz)
         for (int i = 0; i < point::getNPts(); ++i) {
             dx = uvel.at(i)["dx"];
@@ -528,20 +552,26 @@ void AGM::solver::NavierStokesSolver() {
         }
     };
     auto wf{writeFileMultiple<pointHeat, pointHeat, pointHeat, point>(&uvel, &vvel, &wvel, pts)};
-    auto updateTime = [&]() -> void {
+    auto updateTime = [&presentIter, &saveIter, &wf]() -> void {
+        ++presentIter;
         pointHeat::setTime(pointHeat::getTime() + pointHeat::getDelta());
-        std::cout << "current time = [" << pointHeat::getTime() << " / " << AGM::NavierStokesFunction::terminalTime()
-                  << "]\n";
-        if (isclose(std::floor(pointHeat::getTime() + HALFVALUE * pointHeat::getDelta()), pointHeat::getTime())) {
-            wf.writeResult("/home/jjhong0608/docker/AGM3D/Navier-Stokes/Lid-driven_cavity/Re1000_5/AGM_Result_" +
-                           std::to_string(pointHeat::getTime()));
+        std::cout << presentIter << "-th iteration, " << "current time = [" << pointHeat::getTime() << " / "
+                  << AGM::NavierStokesFunction::terminalTime() << "]\n";
+        if (presentIter % saveIter == 0) {
+            wf.writeResult("/home/jjhong0608/docker/AGM3D/Navier-Stokes/Blood_flow/revised/AGM_Result_" +
+                           std::to_string(pointHeat::getTime()).substr(0, 4));
         }
+//        wf.writeResult("/home/jjhong0608/docker/AGM3D/Navier-Stokes/Blood_flow/revised/AGM_Result_" +
+//                       std::to_string(pointHeat::getTime()));
+
     };
+    findSaveIter();
     copyPointInformation();
     assignInitial();
     makeMatrixVelocity();
     auto matrixVelocity{AGM::matrixMulti<pointHeat>(&uvel, &vvel, &wvel)};
-    auto matrixPressure{AGM::matrixNormal<point>(pts, fixedPointIndex)};
+    auto matrixPressure{AGM::matrix<point>(pts)};
+//    auto matrixPressure{AGM::matrixNormal<point>(pts, fixedPointIndex)};
     matrixVelocity.makeMatrix();
     matrixVelocity.factorizeMatrix();
     matrixVelocity.calculateMatrix();
@@ -576,7 +606,7 @@ void AGM::solver::NavierStokesSolver() {
     matrixVelocity.releaseMatrix();
     matrixPressure.releaseMatrix();
 
-    wf.writeResult("/home/jjhong0608/docker/AGM3D/Navier-Stokes/Lid-driven_cavity/Re1000_5/AGM_Result");
+    wf.writeResult("/home/jjhong0608/docker/AGM3D/Navier-Stokes/Blood_flow/revised/AGM_Result");
 }
 
 AGM::solver::~solver() = default;

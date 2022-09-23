@@ -24,43 +24,48 @@
 #include <chrono>
 #include <ctime>
 #include <omp.h>
-#include <unordered_map>
 #include <sys/resource.h>
 
-#ifndef UNITVALUE
-#define UNITVALUE 1.0000000000000000E0
-#endif
-#ifndef HALFVALUE
-#define HALFVALUE 5.0000000000000000E-1
-#endif
-#ifndef ZEROVALUE
-#define ZEROVALUE 0.0000000000000000E0
-#endif
-#ifndef NEARZERO
-#define NEARZERO 1.0000000000000000E-10
-#endif
-#ifndef NT
-#define NT 10
-#endif
+constexpr double UNITVALUE{1.0000000000000000E0};
+constexpr double HALFVALUE{5.0000000000000000E-1};
+constexpr double ZEROVALUE{0.0000000000000000E0};
+constexpr double NEARZERO{1.0000000000000000E-10};
+constexpr int NT{10};
+
+//#ifndef UNITVALUE
+//#define UNITVALUE 1.0000000000000000E0
+//#endif
+//#ifndef HALFVALUE
+//#define HALFVALUE 5.0000000000000000E-1
+//#endif
+//#ifndef ZEROVALUE
+//#define ZEROVALUE 0.0000000000000000E0
+//#endif
+//#ifndef NEARZERO
+//#define NEARZERO 1.0000000000000000E-10
+//#endif
+//#ifndef NT
+//#define NT 10
+//#endif
 
 namespace AGM {
-    bool isclose(double x, double y, double eps = NEARZERO);
+    auto isclose(double x, double y, double eps = NEARZERO) -> bool;
 
     void printError(const std::string &function_name);
 
     void printError(const char *function_name, const char *fmt, ...);
 
-    bool iszero(double x, double eps = NEARZERO);
+    auto iszero(double x, double eps = NEARZERO) -> bool;
 
-    double sgn(double d);
+    auto sgn(double d) -> double;
 
-    bool ispositive(double d);
+    auto ispositive(double d) -> bool;
 
-    bool isnegative(double d);
+    auto isnegative(double d) -> bool;
 
-    bool ispositivezero(double d);
+    auto ispositivezero(double d) -> bool;
 
-    bool isnegativezero(double d);
+    auto isnegativezero(double d) -> bool;
 
     enum STENCIL {
         R, L, F, B, U, D, RF, RB, RU, RD, LF, LB, LU, LD, FR, FL, FU, FD, BR, BL, BU, BD, UR, UL, UF, UB, DR, DL, DF, DB

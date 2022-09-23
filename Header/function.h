@@ -15,19 +15,19 @@ namespace AGM {
 
         virtual ~ellipticFunction();
 
-        double u(const point &pt);
+        auto u(const point &pt) -> double;
 
-        double phi(const point &pt);
+        auto phi(const point &pt) -> double;
 
-        double psi(const point &pt);
+        auto psi(const point &pt) -> double;
 
-        double f(const point &pt);
+        auto f(const point &pt) -> double;
 
-        double ux(const point &pt);
+        auto ux(const point &pt) -> double;
 
-        double uy(const point &pt);
+        auto uy(const point &pt) -> double;
 
-        double uz(const point &pt);
+        auto uz(const point &pt) -> double;
 
         void assignBoundaryValue(point &pt);
     };
@@ -38,25 +38,25 @@ namespace AGM {
 
         virtual ~heatFunction();
 
-        static double initialTime();
+        static auto initialTime() -> double;
 
-        static double terminalTime();
+        static auto terminalTime() -> double;
 
-        static double deltaTime();
+        static auto deltaTime() -> double;
 
-        double u(double t, const pointHeat &pt);
+        auto u(double t, const pointHeat &pt) -> double;
 
-        double phi(double t, const pointHeat &pt);
+        auto phi(double t, const pointHeat &pt) -> double;
 
-        double psi(double t, const pointHeat &pt);
+        auto psi(double t, const pointHeat &pt) -> double;
 
-        double f(double t, const pointHeat &pt);
+        auto f(double t, const pointHeat &pt) -> double;
 
-        double ux(double t, const pointHeat &pt);
+        auto ux(double t, const pointHeat &pt) -> double;
 
-        double uy(double t, const pointHeat &pt);
+        auto uy(double t, const pointHeat &pt) -> double;
 
-        double uz(double t, const pointHeat &pt);
+        auto uz(double t, const pointHeat &pt) -> double;
 
         void assignPreviousValue(value &value, pointHeat &pt);
 
@@ -70,61 +70,63 @@ namespace AGM {
 
         virtual ~NavierStokesFunction();
 
-        static double initialTime();
+        static auto initialTime() -> double;
 
-        static double terminalTime();
+        static auto terminalTime() -> double;
 
-        static double deltaTime();
+        static auto deltaTime() -> double;
 
-        double u(double t, const point &pt);
+        static auto writeTime() -> double;
 
-        double v(double t, const point &pt);
+        auto u(double t, const point &pt) -> double;
 
-        double w(double t, const point &pt);
+        auto v(double t, const point &pt) -> double;
 
-        double p(double t, const point &pt);
+        auto w(double t, const point &pt) -> double;
 
-        double phiU(double t, const point &pt);
+        auto p(double t, const point &pt) -> double;
 
-        double psiU(double t, const point &pt);
+        auto phiU(double t, const point &pt) -> double;
 
-        double phiV(double t, const point &pt);
+        auto psiU(double t, const point &pt) -> double;
 
-        double psiV(double t, const point &pt);
+        auto phiV(double t, const point &pt) -> double;
 
-        double phiW(double t, const point &pt);
+        auto psiV(double t, const point &pt) -> double;
 
-        double psiW(double t, const point &pt);
+        auto phiW(double t, const point &pt) -> double;
 
-        double ux(double t, const point &pt);
+        auto psiW(double t, const point &pt) -> double;
 
-        double uy(double t, const point &pt);
+        auto ux(double t, const point &pt) -> double;
 
-        double uz(double t, const point &pt);
+        auto uy(double t, const point &pt) -> double;
 
-        double vx(double t, const point &pt);
+        auto uz(double t, const point &pt) -> double;
 
-        double vy(double t, const point &pt);
+        auto vx(double t, const point &pt) -> double;
 
-        double vz(double t, const point &pt);
+        auto vy(double t, const point &pt) -> double;
 
-        double wx(double t, const point &pt);
+        auto vz(double t, const point &pt) -> double;
 
-        double wy(double t, const point &pt);
+        auto wx(double t, const point &pt) -> double;
 
-        double wz(double t, const point &pt);
+        auto wy(double t, const point &pt) -> double;
 
-        double px(double t, const point &pt);
+        auto wz(double t, const point &pt) -> double;
 
-        double py(double t, const point &pt);
+        auto px(double t, const point &pt) -> double;
 
-        double pz(double t, const point &pt);
+        auto py(double t, const point &pt) -> double;
 
-        double f1(double t, const point &pt);
+        auto pz(double t, const point &pt) -> double;
 
-        double f2(double t, const point &pt);
+        auto f1(double t, const point &pt) -> double;
 
-        double f3(double t, const point &pt);
+        auto f2(double t, const point &pt) -> double;
+
+        auto f3(double t, const point &pt) -> double;
 
         void loadPreviousValue(const std::string &filename, std::vector<value> *pu,
                                std::vector<value> *pv, std::vector<value> *pw,

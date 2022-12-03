@@ -10,6 +10,9 @@ int main() {
     mkl_set_dynamic(0);
     mkl_set_num_threads(mkl_get_max_threads());
 
+    omp_set_dynamic(0);
+    omp_set_num_threads(omp_get_max_threads());
+
     auto pts = std::vector<AGM::point>{};
     auto xline = std::vector<AGM::axialLine>{};
     auto yline = std::vector<AGM::axialLine>{};

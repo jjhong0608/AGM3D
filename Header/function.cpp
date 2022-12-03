@@ -163,7 +163,7 @@ auto AGM::NavierStokesFunction::initialTime() -> double {
 }
 
 auto AGM::NavierStokesFunction::terminalTime() -> double {
-    const auto time{3e1};
+    const auto time{5e1};
     return time;
 }
 
@@ -173,7 +173,7 @@ auto AGM::NavierStokesFunction::deltaTime() -> double {
 }
 
 auto AGM::NavierStokesFunction::writeTime() -> double {
-    const auto time{1e-2};
+    const auto time{1e-1};
     return time;
 }
 
@@ -190,11 +190,10 @@ auto AGM::NavierStokesFunction::u(double t, const AGM::point &pt) -> double {
     return ZEROVALUE;
 
     /* cavity flow */
-//    if (isclose(z, UNITVALUE)) {
-//        return UNITVALUE;
-//    } else {
-//        return ZEROVALUE;
-//    }
+    if (isclose(z, UNITVALUE)) {
+        return UNITVALUE;
+    }
+    return ZEROVALUE;
 }
 
 auto AGM::NavierStokesFunction::v(double t, const AGM::point &pt) -> double {
@@ -435,27 +434,27 @@ void AGM::NavierStokesFunction::assignPreviousValue(AGM::value &pu, AGM::value &
 
 void AGM::NavierStokesFunction::assignBoundaryValue(AGM::point &uvel, AGM::point &vvel, AGM::point &wvel) {
     if (uvel.getCondition() == 'D') {
-        uvel["bdv"] = u(pointHeat::getTime() + pointHeat::getDelta(), uvel);
+        uvel["bdv"] = 2 * u(pointHeat::getTime() + pointHeat::getDelta(), uvel);
     } else if (uvel.getCondition() == 'N') {
-        uvel["bdv"] = ux(pointHeat::getTime() + pointHeat::getDelta(), uvel) * uvel.getNormal()[0] +
-                      uy(pointHeat::getTime() + pointHeat::getDelta(), uvel) * uvel.getNormal()[1] +
-                      uz(pointHeat::getTime() + pointHeat::getDelta(), uvel) * uvel.getNormal()[2];
+        uvel["bdv"] = 2 * ux(pointHeat::getTime() + pointHeat::getDelta(), uvel) * uvel.getNormal()[0] +
+                      2 * uy(pointHeat::getTime() + pointHeat::getDelta(), uvel) * uvel.getNormal()[1] +
+                      2 * uz(pointHeat::getTime() + pointHeat::getDelta(), uvel) * uvel.getNormal()[2];
     }
     uvel["rhs"] = f1(pointHeat::getTime() + pointHeat::getDelta(), uvel);
     if (vvel.getCondition() == 'D') {
-        vvel["bdv"] = v(pointHeat::getTime() + pointHeat::getDelta(), vvel);
+        vvel["bdv"] = 2 * v(pointHeat::getTime() + pointHeat::getDelta(), vvel);
     } else if (vvel.getCondition() == 'N') {
-        vvel["bdv"] = vx(pointHeat::getTime() + pointHeat::getDelta(), vvel) * vvel.getNormal()[0] +
-                      vy(pointHeat::getTime() + pointHeat::getDelta(), vvel) * vvel.getNormal()[1] +
-                      vz(pointHeat::getTime() + pointHeat::getDelta(), vvel) * vvel.getNormal()[2];
+        vvel["bdv"] = 2 * vx(pointHeat::getTime() + pointHeat::getDelta(), vvel) * vvel.getNormal()[0] +
+                      2 * vy(pointHeat::getTime() + pointHeat::getDelta(), vvel) * vvel.getNormal()[1] +
+                      2 * vz(pointHeat::getTime() + pointHeat::getDelta(), vvel) * vvel.getNormal()[2];
     }
     vvel["rhs"] = f2(pointHeat::getTime() + pointHeat::getDelta(), vvel);
     if (wvel.getCondition() == 'D') {
-        wvel["bdv"] = w(pointHeat::getTime() + pointHeat::getDelta(), wvel);
+        wvel["bdv"] = 2 * w(pointHeat::getTime() + pointHeat::getDelta(), wvel);
     } else if (wvel.getCondition() == 'N') {
-        wvel["bdv"] = wx(pointHeat::getTime() + pointHeat::getDelta(), wvel) * wvel.getNormal()[0] +
-                      wy(pointHeat::getTime() + pointHeat::getDelta(), wvel) * wvel.getNormal()[1] +
-                      wz(pointHeat::getTime() + pointHeat::getDelta(), wvel) * wvel.getNormal()[2];
+        wvel["bdv"] = 2 * wx(pointHeat::getTime() + pointHeat::getDelta(), wvel) * wvel.getNormal()[0] +
+                      2 * wy(pointHeat::getTime() + pointHeat::getDelta(), wvel) * wvel.getNormal()[1] +
+                      2 * wz(pointHeat::getTime() + pointHeat::getDelta(), wvel) * wvel.getNormal()[2];
     }
     wvel["rhs"] = f3(pointHeat::getTime() + pointHeat::getDelta(), wvel);
 }

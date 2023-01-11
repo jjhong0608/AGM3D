@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="NIMS (57c5e6ef-6b91-49c0-9866-2518a3bc78d4)" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" serverName="jhjo@165.246.142.45:22 password" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="NIMS (57c5e6ef-6b91-49c0-9866-2518a3bc78d4)">
+      <paths name="dokim (d41c1e1c-2ef2-4641-b4ca-dfc40189255e)">
         <serverdata>
           <mappings>
             <mapping deploy="/AGM3D/" local="$PROJECT_DIR$" />
@@ -10,6 +10,13 @@
           <excludedPaths>
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
           </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="jhjo@165.246.142.45:22 password">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/AGM3D/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
         </serverdata>
       </paths>
     </serverData>

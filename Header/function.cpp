@@ -163,17 +163,17 @@ auto AGM::NavierStokesFunction::initialTime() -> double {
 }
 
 auto AGM::NavierStokesFunction::terminalTime() -> double {
-    const auto time{5e1};
+    const auto time{1e3};
     return time;
 }
 
 auto AGM::NavierStokesFunction::deltaTime() -> double {
-    const auto time{1e-3};
+    const auto time{1e-2};
     return time;
 }
 
 auto AGM::NavierStokesFunction::writeTime() -> double {
-    const auto time{1e-1};
+    const auto time{1e1};
     return time;
 }
 
@@ -181,15 +181,15 @@ auto AGM::NavierStokesFunction::u(double t, const AGM::point &pt) -> double {
     const auto x{pt[0]};
     const auto y{pt[1]};
     const auto z{pt[2]};
-    const auto r{std::sqrt(std::pow(y, 2) + std::pow(z, 2))};
-    const auto radius{2e0};
-    const auto maxVelocity{2e1 / (2 * radius)};
-    if (isclose(pt.getNormal()[0], -UNITVALUE)) {
-        return maxVelocity * (radius + r) * (radius - r);
-    }
-    return ZEROVALUE;
+//    const auto r{std::sqrt(std::pow(y, 2) + std::pow(z, 2))};
+//    const auto radius{2e0};
+//    const auto maxVelocity{2e1 / (2 * radius)};
+//    if (isclose(pt.getNormal()[0], -UNITVALUE)) {
+//        return maxVelocity * (radius + r) * (radius - r);
+//    }
+//    return ZEROVALUE;
 
-    /* cavity flow */
+//    /* cavity flow */
     if (isclose(z, UNITVALUE)) {
         return UNITVALUE;
     }
